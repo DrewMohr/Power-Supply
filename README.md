@@ -1,4 +1,4 @@
-# Power-Supply-Display-Driver
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Andrew Mohr 2020
 Version: Alpha Build 0.8.7
