@@ -51,8 +51,11 @@ float c1 = 1.009249522e-03, c2 = 2.378405444e-04, c3 = 2.019202697e-07;
 
 void setup(){
 
-    
+//Pinmode start  
   pinMode(A2, OUTPUT);
+
+//Pinmode end
+
     Serial.println("SERIAL BAUD SET = 9600");
         Serial.begin(9600);
   display.clearDisplay();

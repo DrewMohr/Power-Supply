@@ -3,8 +3,11 @@
         {
             "name": "Win32",
             "includePath": [
+                "C:\\Users\\Drew\\AppData\\Local\\Arduino15\\packages\\esp8266\\tools\\**",
+                "C:\\Users\\Drew\\AppData\\Local\\Arduino15\\packages\\esp8266\\hardware\\esp8266\\2.6.3\\**",
                 "C:\\Users\\Drew\\AppData\\Local\\Arduino15\\packages\\arduino\\tools\\**",
-                "C:\\Users\\Drew\\AppData\\Local\\Arduino15\\packages\\arduino\\hardware\\avr\\1.8.2\\**"
+                "C:\\Users\\Drew\\AppData\\Local\\Arduino15\\packages\\arduino\\hardware\\avr\\1.8.2\\**",
+                "C:/USERS/DREW/APPDATA/LOCAL/ARDUINO15/PACKAGES/ARDUINO/HARDWARE/AVR/1.8.2/LIBRARIES/ADAFRUIT GFX LIBRARY_ID13"
             ],
             "forcedInclude": [
                 "C:\\Users\\Drew\\AppData\\Local\\Arduino15\\packages\\arduino\\hardware\\avr\\1.8.2\\cores\\arduino\\Arduino.h"
