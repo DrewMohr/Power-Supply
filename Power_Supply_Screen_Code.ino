@@ -22,11 +22,12 @@
 // -- Debugging
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-#include <Wire.h>
-#include <Adafruit_GFX.h>
-#include <Adafruit_SSD1306.h>
-#include <Adafruit_Sensor.h>
-#include <DHT.h>
+#include <Wire.h> //basics
+#include <Adafruit_GFX.h> //GFX
+#include <Adafruit_SSD1306.h> //Display Library
+#include <Adafruit_Sensor.h> //Temp
+#include <DHT.h> //DHT
+#include <Servo.h> //Servo
 
 #define OLED_RESET 13  //keep this before one below
 Adafruit_SSD1306 display(OLED_RESET);
@@ -39,6 +40,7 @@ int output;
 int incomingByte = 0;
 int cycle = 0;
 int fan;
+int fan_count;
 
 int ThermistorPin = A3;
 int Vo;
@@ -117,6 +119,13 @@ void setup(){
   display.print("    VERSION-A0.8.7");                                     //~~~~~~~~~~~~~~~~~~~~ <<VERSION OF SOFTWARE---CHANGE THIS WHEN UPDATING>>
   display.display();
      Serial.println("<<RUNNING VERSION: ALPHA BUILD 0.8.7>>");        //~~~~~~~~~~~~~~~~~~~~ <<CHANGE THIS AS WELL>>
+      //debug serial settings
+      //Serial.println("*Debug---ok");
+      Serial.println("*Debug---Running Test Build v0.8.7w06_a")
+  
+
+
+  
   delay(2000);
 
 
@@ -124,39 +133,39 @@ void setup(){
 
   
   display.setTextColor(WHITE);
-  display.setTextSize(0);
-  display.setCursor(25,25);
-  display.print("   LOADING...");
-  display.display();
+    display.setTextSize(0);
+    display.setCursor(25,25);
+    display.print("   LOADING...");
+    display.display();
     Serial.println("LOADING");
-  delay(1000);
-  display.clearDisplay();
+    delay(1000);
+    display.clearDisplay();
 
   display.setTextColor(WHITE);
-  display.setTextSize(2);
-  display.setCursor(0,8);
-  display.print("  WELCOME");
-  display.display();
+    display.setTextSize(2);
+    display.setCursor(0,8);
+    display.print("  WELCOME");
+    display.display();
   
   
 
   display.setTextColor(WHITE);
-  display.setTextSize(2);
-  display.setCursor(0,8);
-  display.print("  WELCOME");
-  display.display();
+    display.setTextSize(2);
+    display.setCursor(0,8);
+    display.print("  WELCOME");
+    display.display();
   
   display.setTextColor(WHITE);
-  display.setTextSize(0);
-  display.setCursor(0,25);
-  display.print("        DONE!");
-  display.display();
+    display.setTextSize(0);
+    display.setCursor(0,25);
+    display.print("        DONE!");
+    display.display();
     Serial.println("---DONE!---");
-  delay(100);
-    Serial.println("---STARTING USER INTERFACE---");
+    delay(100);
+  Serial.println("---STARTING USER INTERFACE---");
   delay(100);
 
-  
+  fan_count = 0;
   //END
   display.clearDisplay();
      
@@ -187,14 +196,14 @@ void setup(){
      
     
   display.setTextColor(WHITE);
-  display.setTextSize(0);
-  display.setCursor(0,0);
-  display.print("OUTPUT");
-  display.display();
+    display.setTextSize(0);
+    display.setCursor(0,0);
+    display.print("OUTPUT");
+    display.display();
       
   display.setTextColor(WHITE);
-  display.setTextSize(0);
-  display.setCursor(0,10);
+    display.setTextSize(0);
+    display.setCursor(0,10);
   if (digitalRead(3) == LOW){      //OUTPUT STATUS
     display.print("OFF");
     analogWrite(5, 0);
@@ -355,10 +364,23 @@ void setup(){
   display.print(T);
   display.print("F");
   
-  
+  //~~~~~
 
 
-       
-        cycle = cycle + 1; //~~~~~~~~~~~~~~~~~~~KEEP THIS LAST OF VOID LOOP
+      if (fan_count >= 200) {
+          fan = HIGH;
+
+      }
+
+            if (fan_count >= 225) {
+              fan_count = 0;
+            }
+
+
+
+
+
+        cycle = cycle + 1; //~~~~~~~~~~~~~~~~~~~KEEP THESE LAST OF VOID LOOP
+        fan_count = fan_count + 1;
   
 }
