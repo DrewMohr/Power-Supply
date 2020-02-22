@@ -17,8 +17,8 @@
 //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-#include <Wire.h>;
-
+#include <Wire.h>
+#include <DHT.h>
 
 
 int i = 0;
