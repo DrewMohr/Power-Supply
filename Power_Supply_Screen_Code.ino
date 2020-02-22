@@ -121,7 +121,7 @@ void setup(){
      Serial.println("<<RUNNING VERSION: ALPHA BUILD 0.8.7>>");        //~~~~~~~~~~~~~~~~~~~~ <<CHANGE THIS AS WELL>>
       //debug serial settings
       //Serial.println("*Debug---ok");
-      Serial.println("*Debug---Running Test Build v0.8.7w06_a")
+      Serial.println("*Debug---Running Test Build v0.8.7w06_a");
   
 
 

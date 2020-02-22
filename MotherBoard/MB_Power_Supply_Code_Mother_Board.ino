@@ -19,14 +19,16 @@
 
 #include <Wire.h>
 #include <DHT.h>
-
+#include <Servo.h>
+#include <Adafruit_GFX.h>
 
 int i = 0;
 int j = 0;
 int SECONDARY_BOARD_ON_BOARD = 0;
 int button = 8;
 int output = 7;
-
+int fan = 5;
+int fan_count;
 int buttonCurrent;
 int buttonPrevious = LOW;
 
@@ -117,29 +119,19 @@ void setup() {
   digitalWrite(13, LOW);
   delay(500); // Wait for 500 millisecond(s)
   digitalWrite(13, HIGH);
-  if (digitalRead(12) != HIGH) {
-    Serial.println("DEBUG-----NO DATA PANEL DETECTED");
-    Serial.println("DEBUG-----ERROR: 1-300");
-    tone(A1, 932, 50); // play tone 70 (A#5 = 932 Hz)
-    delay(100); // Wait for 100 millisecond(s)
-    tone(A1, 932, 50); // play tone 70 (A#5 = 932 Hz)
-    delay(100); // Wait for 100 millisecond(s)
-    tone(A1, 932, 50); // play tone 70 (A#5 = 932 Hz)
-    delay(100); // Wait for 100 millisecond(s)
-    tone(A1, 932, 50); // play tone 70 (A#5 = 932 Hz)
-    delay(100); // Wait for 100 millisecond(s)
-    tone(A1, 932, 50); // play tone 70 (A#5 = 932 Hz)
-    delay(100); // Wait for 100 millisecond(s)
-    tone(A1, 932, 50); // play tone 70 (A#5 = 932 Hz)
-    delay(100); // Wait for 100 millisecond(s)
-  }
-  // Setup~~
 
+
+  
+  
+       fan_count = 0;
+  
+  // Setup~~
+     
   output = LOW;
 }
 
-void loop()
-{
+  void loop() {
+
   
   delay(50); // Wait for 80 millisecond(s)
   Serial.println("Check");
@@ -157,8 +149,20 @@ void loop()
       analogWrite(5, 200);
     }
   }
-  digitalWrite(7, output);
+  
 
   buttonPrevious = buttonCurrent;
 
+  if (fan_count >= 200) {
+          fan = HIGH;
+
+      }
+
+            if (fan_count >= 225) {
+              fan_count = 0;
+            }
+
+
+
+        fan_count = fan_count + 1;
 }
