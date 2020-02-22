@@ -16,6 +16,11 @@
 // -- Trigger Button System Rebuild
 //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+#include <Wire.h>;
+
+
+
 int i = 0;
 int j = 0;
 int SECONDARY_BOARD_ON_BOARD = 0;
