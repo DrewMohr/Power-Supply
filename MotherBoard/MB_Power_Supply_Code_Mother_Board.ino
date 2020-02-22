@@ -32,6 +32,20 @@ int fan_count;
 int buttonCurrent;
 int buttonPrevious = LOW;
 
+//UPDATE THIS WHEN VERSION CHANGES OCCUR VV  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //!!! UNDER DEVELOPMENT !!!
+
+//int v1 = 1;  //VERSION 0.X.X.X - X - XXX
+//int v2 = 2;  //VERSION X.0.X.X - X - XXX
+//int v3 = 3;  //VERSION X.X.0.X - X - XXX
+//int v4 = 4;  //VERSION X.X.X.0 - X - XXX
+
+//int v5 = 1;  //VERSION X.X.X.X - 0 - XXX
+//int v6 = 2;  //VERSION X.X.X.X - X - 000
+
+
+
+//UPDATE THIS WHEN VERSION CHANGES OCCUR ^^  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 void setup() {
   
   pinMode(3, OUTPUT);
@@ -40,7 +54,23 @@ void setup() {
   pinMode(A2, OUTPUT);
   Serial.begin(9600);
 
-    Serial.println("Mother Board Driver V1");
+    Serial.print("Mother Board Driver VERSION");
+    Serial.print(v1);
+    Serial.print(".");
+    Serial.print(v2);
+    Serial.print(".");
+    Serial.print(v3);
+    Serial.print(".");
+    Serial.print(v4);
+
+   
+
+    
+
+
+
+
+
 
   pinMode(10, OUTPUT);
   pinMode(13, OUTPUT);
@@ -150,19 +180,19 @@ void setup() {
     }
   }
   
+  if (digitalRead(A7) == HIGH) {
+      digitalWrite(5, HIGH);
+      fan = HIGH;
+    }
+    else {
+        analogWrite(5, 50);             //Change this for Preferance (When T is at an acceptable level, the fan will still spin - only slowly(50/255))
+        //digitalWrite(5, LOW);         //Change this for Preferance (When T is at an acceptable level, the fan will halt)
+    }
 
-  buttonPrevious = buttonCurrent;
+  
 
-  if (fan_count >= 200) {
-          fan = HIGH;
+    
 
-      }
-
-            if (fan_count >= 225) {
-              fan_count = 0;
-            }
-
-
-
-        fan_count = fan_count + 1;
+        buttonPrevious = buttonCurrent;
+        
 }

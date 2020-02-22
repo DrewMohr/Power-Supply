@@ -2,6 +2,6 @@
     "board": "arduino:avr:nano",
     "configuration": "cpu=atmega328",
     "programmer": "AVR ISP",
-    "sketch": "Power_Supply_Screen_Code.ino",
+    "sketch": "MotherBoard\\MB_Power_Supply_Code_Mother_Board.ino",
     "port": "COM8"
 }

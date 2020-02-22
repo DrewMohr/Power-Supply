@@ -1,5 +1,5 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Andrew Mohr 2020
+Andrew Mohr 2019-2020
 Version: Alpha Build 0.8.7
 Date Started: 1/18/2020 11:07pm
 Last Date Offically Updated: 2/20/2020 04:29pm
