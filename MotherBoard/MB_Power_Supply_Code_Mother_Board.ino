@@ -21,7 +21,7 @@
 #include <DHT.h>
 #include <Servo.h>
 #include <Adafruit_GFX.h>
-
+  //Variables Start
 int i = 0;
 int j = 0;
 int SECONDARY_BOARD_ON_BOARD = 0;
@@ -31,20 +31,7 @@ int fan = 5;
 int fan_count;
 int buttonCurrent;
 int buttonPrevious = LOW;
-
-//UPDATE THIS WHEN VERSION CHANGES OCCUR VV  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //!!! UNDER DEVELOPMENT !!!
-
-//int v1 = 1;  //VERSION 0.X.X.X - X - XXX
-//int v2 = 2;  //VERSION X.0.X.X - X - XXX
-//int v3 = 3;  //VERSION X.X.0.X - X - XXX
-//int v4 = 4;  //VERSION X.X.X.0 - X - XXX
-
-//int v5 = 1;  //VERSION X.X.X.X - 0 - XXX
-//int v6 = 2;  //VERSION X.X.X.X - X - 000
-
-
-
-//UPDATE THIS WHEN VERSION CHANGES OCCUR ^^  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  //Variables End
 
 void setup() {
   
@@ -53,23 +40,6 @@ void setup() {
   pinMode(A0, OUTPUT);
   pinMode(A2, OUTPUT);
   Serial.begin(9600);
-
-    Serial.print("Mother Board Driver VERSION");
-    Serial.print(v1);
-    Serial.print(".");
-    Serial.print(v2);
-    Serial.print(".");
-    Serial.print(v3);
-    Serial.print(".");
-    Serial.print(v4);
-
-   
-
-    
-
-
-
-
 
 
   pinMode(10, OUTPUT);
@@ -193,6 +163,8 @@ void setup() {
 
     
 
-        buttonPrevious = buttonCurrent;
+        buttonPrevious = buttonCurrent;  //Keep this at end of void loop()
         
 }
+
+

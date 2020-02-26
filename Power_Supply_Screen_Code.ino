@@ -1,7 +1,8 @@
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//Andrew Mohr 2020
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//Andrew Mohr 2019-2020
 //Version: Alpha Build 0.8.7
-//Date Started: 1/18/2020 11:07pmsdg
+//Date Started: 1/18/2020 11:07pms
 //Last Date Offically Updated: 2/20/2020 04:29pm
 //--------------------------------------------------
 //           CHANGE LOG BELOW
@@ -20,7 +21,8 @@
 // 2/10/2020 10:22pm | v.Alpha 0.8.7
 // -- Added Temperature Monitoring
 // -- Debugging
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
 
 #include <Wire.h> //basics
 #include <Adafruit_GFX.h> //GFX
@@ -29,10 +31,12 @@
 #include <DHT.h> //DHT
 #include <Servo.h> //Servo
 
-#define OLED_RESET 13  //keep this before one below
-Adafruit_SSD1306 display(OLED_RESET);
+
+#define OLED_RESET 13  //keep this before one below!!!
+Adafruit_SSD1306 display(OLED_RESET); //Do not move postition
 #define SCREEN_WIDTH 128
 #define SCREEN_HIGHT 64
+
 
 //variables start
 
@@ -42,17 +46,24 @@ int cycle = 0;
 int fan;
 int fan_count;
 
+
 int ThermistorPin = A3;
 int Vo;
 float R1 = 10000;
 float logR2, R2, T;
 float c1 = 1.009249522e-03, c2 = 2.378405444e-04, c3 = 2.019202697e-07;
 
+String disv = "A0.8.7"
+String v = "Alpha Build 0.8.7"; //Release Version-------------------------------UPDATE THIS WHEN UPDATING
+String dv = "dev.prealpha-0.8.8w22"; //Development Version----------------------THIS TOO DAMMIT
 
 //variables end
 
-void setup(){
 
+
+void setup() {
+
+  
 //Pinmode start  
   pinMode(A2, OUTPUT);
 
@@ -66,6 +77,10 @@ void setup(){
     Serial.println("INITIALIZING DISPLAY >> 0x3c");
   delay(200);
   display.cp437(true);
+
+    Serial.println(v);
+    Serial.println(dv);
+
 
     Serial.println("TEST STATUS LIGHTS");
   analogWrite(5, 250);
@@ -113,20 +128,23 @@ void setup(){
     Serial.println("SUCCESS");
   delay(1500);
  
+
+
+                //VERSION INFO
   display.setTextColor(WHITE);
   display.setTextSize(1);
   display.setCursor(0,0);
-  display.print("    VERSION-A0.8.7");                                     //~~~~~~~~~~~~~~~~~~~~ <<VERSION OF SOFTWARE---CHANGE THIS WHEN UPDATING>>
+  display.print("    VERSION-");                                     
   display.display();
-     Serial.println("<<RUNNING VERSION: ALPHA BUILD 0.8.7>>");        //~~~~~~~~~~~~~~~~~~~~ <<CHANGE THIS AS WELL>>
-      //debug serial settings
-      //Serial.println("*Debug---ok");
-      Serial.println("*Debug---Running Test Build v0.8.7w06_a");
-  
+     Serial.print("<<RUNNING VERSION:  >>");     
+     Serial.print(v);
+     
+      
+      
 
-
-  
   delay(2000);
+
+
 
 
   //PLACE INT AND OTHER STARTUP MATERIAL HERE \/\/\/
@@ -148,7 +166,6 @@ void setup(){
     display.display();
   
   
-
   display.setTextColor(WHITE);
     display.setTextSize(2);
     display.setCursor(0,8);
@@ -168,12 +185,19 @@ void setup(){
   fan_count = 0;
   //END
   display.clearDisplay();
-     
-
-  
-  
+    
  }
  
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+
+
+
   void loop() {
     
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -258,6 +282,8 @@ void setup(){
       }
       
   //~~~~
+
+
                                 //SHORT CIRCUIT STATUS
     display.setTextColor(WHITE);
     display.setTextSize(0);
@@ -317,6 +343,8 @@ void setup(){
 
       }
   //~~~~
+
+
                                   //BACKLIGHT STATUS
     if (analogRead(A1) >= 480) {
 
@@ -330,9 +358,16 @@ void setup(){
         display.fillCircle(4, 23, 4, WHITE);
       }
 
+
+
   //~~~~
 
-            //TMRS -- Temperature Monitoring and Regulatory System     
+
+
+
+
+  
+            //TMRS -- Temperature Monitoring and Regulatory System   ~~~~~~~~~~~  
     Vo = analogRead(ThermistorPin);
   R2 = R1 * (1023.0 / (float)Vo - 1.0);
   logR2 = log(R2);
@@ -340,9 +375,11 @@ void setup(){
   T = T - 273.15;
   T = (T * 9.0)/ 5.0 + 32.0; 
 
+
   Serial.print("Temperature: "); 
   Serial.print(T);
   Serial.println(" F");
+
 
     if (T >= 85) {
         digitalWrite(8, HIGH);
@@ -353,11 +390,15 @@ void setup(){
      fan = LOW;
       }
 
+
+
    display.setTextColor(WHITE);
   display.setTextSize(1);
   display.setCursor(50,25);
   display.print("TMRS: ");
   
+
+
   display.setTextColor(WHITE);
   display.setTextSize(1);
   display.setCursor(85,25);
@@ -367,20 +408,17 @@ void setup(){
   //~~~~~
 
 
-      if (fan_count >= 200) {
-          fan = HIGH;
-
-      }
-
-            if (fan_count >= 225) {
-              fan_count = 0;
-            }
-
-
-
-
-
         cycle = cycle + 1; //~~~~~~~~~~~~~~~~~~~KEEP THESE LAST OF VOID LOOP
         fan_count = fan_count + 1;
   
 }
+
+
+
+
+
+
+
+
+
+
