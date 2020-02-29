@@ -297,7 +297,7 @@ void setup() {
       display.print("OK");
         Serial.println("OK");
     
-  }
+  }gghj
       else {
 
           Serial.println("SHORT CIRCUIT");
