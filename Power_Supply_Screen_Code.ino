@@ -33,7 +33,7 @@
 
 
 #define OLED_RESET 13  //keep this before one below!!!
-Adafruit_SSD1306 display(OLED_RESET); //Do not move postition
+Adafruit_SSD1306 display(OLED_RESET); //Do not move position
 #define SCREEN_WIDTH 128
 #define SCREEN_HIGHT 64
 

@@ -21,6 +21,7 @@
 #include <DHT.h>
 #include <Servo.h>
 #include <Adafruit_GFX.h>
+
   //Variables Start
 int i = 0;
 int j = 0;
