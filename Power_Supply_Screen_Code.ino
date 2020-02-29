@@ -53,9 +53,9 @@ float R1 = 10000;
 float logR2, R2, T;
 float c1 = 1.009249522e-03, c2 = 2.378405444e-04, c3 = 2.019202697e-07;
 
-String disv = "A0.8.7"
+String disv = "A0.8.7";
 String v = "Alpha Build 0.8.7"; //Release Version-------------------------------UPDATE THIS WHEN UPDATING
-String dv = "dev.prealpha-0.8.8w22"; //Development Version----------------------THIS TOO DAMMIT
+String dv = "dev.prealpha-0.8.8w24"; //Development Version----------------------THIS TOO DAMMIT
 
 //variables end
 
@@ -78,8 +78,6 @@ void setup() {
   delay(200);
   display.cp437(true);
 
-    Serial.println(v);
-    Serial.println(dv);
 
 
     Serial.println("TEST STATUS LIGHTS");
@@ -134,10 +132,17 @@ void setup() {
   display.setTextColor(WHITE);
   display.setTextSize(1);
   display.setCursor(0,0);
-  display.print("    VERSION-");                                     
+  display.print("    VERSION-");
+  display.print(              disv);
   display.display();
-     Serial.print("<<RUNNING VERSION:  >>");     
+     Serial.println("--------------------------------------------------");
+     Serial.print("<< RUNNING VERSION:  ");     
      Serial.print(v);
+     Serial.println(" >>");
+     Serial.print("<< DEVELOPMENT BUILD:  ");
+     Serial.print(dv);
+     Serial.println(" >>");
+     Serial.println("--------------------------------------------------");
      
       
       
@@ -204,7 +209,7 @@ void setup() {
 //Input Data scripts below|
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-       
+    display.drawCircle(40, 28, 3, WHITE);
     Serial.print("CYCLE ");
      Serial.println(cycle);
     Serial.println("--CHECK--"); //~~~~CHECK
@@ -345,7 +350,7 @@ void setup() {
   //~~~~
 
 
-                                  //BACKLIGHT STATUS
+                                  //PANEL BACKLIGHT STATUS
     if (analogRead(A1) >= 480) {
 
       digitalWrite(A7, LOW);
@@ -367,7 +372,7 @@ void setup() {
 
 
   
-            //TMRS -- Temperature Monitoring and Regulatory System   ~~~~~~~~~~~  
+            //TMRS -- Temperature Monitoring and Regulatory System   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Vo = analogRead(ThermistorPin);
   R2 = R1 * (1023.0 / (float)Vo - 1.0);
   logR2 = log(R2);
@@ -381,12 +386,14 @@ void setup() {
   Serial.println(" F");
 
 
-    if (T >= 85) {
+    if (T >= 75) {
         digitalWrite(8, HIGH);
      fan = HIGH;
+     display.fillCircle(40, 28, 3, WHITE);
       }
     else {
         digitalWrite(8, LOW);
+     display.drawCircle(40, 28, 3, WHITE);
      fan = LOW;
       }
 
@@ -405,11 +412,14 @@ void setup() {
   display.print(T);
   display.print("F");
   
+
+
+
   //~~~~~
 
 
-        cycle = cycle + 1; //~~~~~~~~~~~~~~~~~~~KEEP THESE LAST OF VOID LOOP
-        fan_count = fan_count + 1;
+        cycle = cycle + 1; //~~~~~KEEP THESE LAST OF VOID LOOP
+        fan_count = fan_count + 1; //THIS TOO
   
 }
 
