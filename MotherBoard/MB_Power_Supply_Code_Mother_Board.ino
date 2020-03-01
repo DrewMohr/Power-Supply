@@ -150,7 +150,9 @@ void setup() {
       analogWrite(5, 200);
     }
   }
+
   
+                        //TMRS -- Temperature Monitoring and Regulatory System  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   if (digitalRead(A7) == HIGH) {
       digitalWrite(5, HIGH);
       fan = HIGH;

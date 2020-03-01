@@ -45,7 +45,11 @@ int incomingByte = 0;
 int cycle = 0;
 int fan;
 int fan_count;
-
+int button = 3;
+int buttonCurrent;
+int buttonPrevious = LOW;
+int tempWarn;
+int tempWarn_count;
 
 int ThermistorPin = A3;
 int Vo;
@@ -55,7 +59,7 @@ float c1 = 1.009249522e-03, c2 = 2.378405444e-04, c3 = 2.019202697e-07;
 
 String disv = "A0.8.7";
 String v = "Alpha Build 0.8.7"; //Release Version-------------------------------UPDATE THIS WHEN UPDATING
-String dv = "dev.prealpha-0.8.8w24"; //Development Version----------------------THIS TOO DAMMIT
+String dv = "dev.prealpha-0.8.8w25"; //Development Version----------------------THIS TOO DAMMIT
 
 //variables end
 
@@ -187,7 +191,11 @@ void setup() {
   Serial.println("---STARTING USER INTERFACE---");
   delay(100);
 
+
+  
   fan_count = 0;
+  tempWarn_count = 0;
+  tempWarn = LOW;
   //END
   display.clearDisplay();
     
@@ -208,7 +216,7 @@ void setup() {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //Input Data scripts below|
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
+    digitalWrite(A0, LOW);
     display.drawCircle(40, 28, 3, WHITE);
     Serial.print("CYCLE ");
      Serial.println(cycle);
@@ -233,6 +241,8 @@ void setup() {
   display.setTextColor(WHITE);
     display.setTextSize(0);
     display.setCursor(0,10);
+
+
   if (digitalRead(3) == LOW){      //OUTPUT STATUS
     display.print("OFF");
     analogWrite(5, 0);
@@ -243,13 +253,46 @@ void setup() {
   }
     else {
     display.print("ACTIVE");
-    analogWrite(5, 10);
+    digitalWrite(5, HIGH);
     display.display();
     display.clearDisplay();
       Serial.println("OUTPUT--ACTIVE");
   }
 
 
+
+/*
+  buttonCurrent = digitalRead(button);
+  
+
+    
+        if (buttonCurrent == HIGH && buttonPrevious == LOW){
+            if (output == HIGH){
+              output = LOW;
+              
+            }
+          else {
+              output = HIGH;
+              
+              }
+            }
+              display.clearDisplay();
+
+        if (output == HIGH) {
+              display.print("ACTIVE");
+              analogWrite(5, 10);
+              display.display();
+              display.clearDisplay();
+              Serial.println("OUTPUT--ACTIVE");
+        }
+        else {
+              display.print("OFF");
+              analogWrite(5, 0);
+              display.display();
+              display.clearDisplay();
+              Serial.println("OUTPUT--OFF");
+        }
+*/
 
 //~~~
 
@@ -372,7 +415,7 @@ void setup() {
 
 
   
-            //TMRS -- Temperature Monitoring and Regulatory System   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            //TMRS -- Temperature Monitoring and Regulatory System   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Vo = analogRead(ThermistorPin);
   R2 = R1 * (1023.0 / (float)Vo - 1.0);
   logR2 = log(R2);
@@ -385,7 +428,7 @@ void setup() {
   Serial.print(T);
   Serial.println(" F");
 
-
+                            //Fan Regulator
     if (T >= 75) {
         digitalWrite(8, HIGH);
      fan = HIGH;
@@ -396,6 +439,54 @@ void setup() {
      display.drawCircle(40, 28, 3, WHITE);
      fan = LOW;
       }
+
+
+                            //tempWarn
+        display.setTextColor(WHITE);
+        display.setTextSize(1);
+        display.setCursor(20,17);
+
+    if (T >= 100) {
+     tempWarn_count = tempWarn_count + 1;
+     tempWarn = HIGH;
+     display.print("WARNING TEMP HIGH");
+     Serial.print("[!]-ALARM-[!]-- ");
+     Serial.println("WARNING TEMPERATURE REACHED >100*F");
+     
+      }
+    else {
+     tempWarn_count = 0;
+     tempWarn = LOW;
+      }
+
+
+    if (tempWarn_count == 1) {
+        digitalWrite(A0, HIGH);
+        digitalWrite(A2, HIGH);
+        delay(150);
+        digitalWrite(A2, LOW);
+        delay(150);
+        digitalWrite(A2, HIGH);
+        delay(150);
+        digitalWrite(A2, LOW);
+        delay(150);
+        digitalWrite(A2, HIGH);
+        delay(150);
+        digitalWrite(A2, LOW);
+        delay(150);
+    }
+    if (tempWarn_count == 50) {
+      tempWarn_count = 0;
+      
+    }
+    if (tempWarn_count >= 1) {
+      digitalWrite(A0, HIGH);
+    }
+    else {
+      digitalWrite(A0, LOW);
+    }
+
+
 
 
 
@@ -420,7 +511,8 @@ void setup() {
 
         cycle = cycle + 1; //~~~~~KEEP THESE LAST OF VOID LOOP
         fan_count = fan_count + 1; //THIS TOO
-  
+        //buttonCurrent = buttonPrevious;
+
 }
 
 
