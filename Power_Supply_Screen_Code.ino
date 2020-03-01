@@ -59,7 +59,7 @@ float c1 = 1.009249522e-03, c2 = 2.378405444e-04, c3 = 2.019202697e-07;
 
 String disv = "A0.8.7";
 String v = "Alpha Build 0.8.7"; //Release Version-------------------------------UPDATE THIS WHEN UPDATING
-String dv = "dev.prealpha-0.8.8w25"; //Development Version----------------------THIS TOO DAMMIT
+String dv = "dev.prealpha-0.8.8w26"; //Development Version----------------------THIS TOO DAMMIT
 
 //variables end
 
