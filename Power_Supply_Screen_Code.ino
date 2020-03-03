@@ -1,5 +1,5 @@
 /*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //Andrew Mohr 2019-2020
 //Version: Alpha Build 0.8.7
 //Date Started: 1/18/2020 11:07pms
@@ -21,13 +21,13 @@
 // 2/10/2020 10:22pm | v.Alpha 0.8.7
 // -- Added Temperature Monitoring
 // -- Debugging
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
 #include <Wire.h> //basics
 #include <Adafruit_GFX.h> //GFX
 #include <Adafruit_SSD1306.h> //Display Library
-#include <Adafruit_Sensor.h> //Temp
+#include <Adafruit_Sensor.h> //Temperature
 #include <DHT.h> //DHT
 #include <Servo.h> //Servo
 
@@ -41,10 +41,19 @@ Adafruit_SSD1306 display(OLED_RESET); //Do not move postition
 //variables start
 
 int output;
-int incomingByte = 0;
 int cycle = 0;
 int fan;
 int fan_count;
+//DEBUG
+  int DEBUG;
+  int DEBUG_SHORT;
+  int DEBUG_OUTPUT;
+  int DEBUG_READY;
+  int DEBUG_BACKLIGHT;
+  int DEBUG_TEMP_OVERHEAT;
+  int DEBUG_RESET;
+  int DEBUG_FAN;
+String incomingbyte = "";
 
 
 int ThermistorPin = A3;
@@ -52,6 +61,7 @@ int Vo;
 float R1 = 10000;
 float logR2, R2, T;
 float c1 = 1.009249522e-03, c2 = 2.378405444e-04, c3 = 2.019202697e-07;
+
 
 String disv = "A0.8.7";
 String v = "Alpha Build 0.8.7"; //Release Version-------------------------------UPDATE THIS WHEN UPDATING
@@ -191,20 +201,44 @@ void setup() {
   //END
   display.clearDisplay();
     
+  DEBUG_SHORT = LOW;
+  DEBUG_OUTPUT = LOW;
+  DEBUG_READY = LOW;
+  DEBUG_BACKLIGHT = LOW;
+  DEBUG_TEMP_OVERHEAT = LOW;
+  DEBUG_RESET = LOW;
+  DEBUG_FAN = LOW;
+
+  Serial.print("[DEBUG]-[001]->");
+  Serial.println("DEBUG = DISABLED");
  }
  
-
-
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-
-
 
   void loop() {
-    
+
+      incomingbyte = Serial.readString();
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//DEBUG/development tools below
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      if (incomingbyte == "DEBUG = ENABLED") {  //TYPE "DEBUG = ENABLED" IN CONSOLE TO ENTER DEBUG
+        Serial.print("[DEBUG]-[001]-> ");
+        Serial.println("ENTERING DEBUG MODE");
+        delay(300);
+        DEBUG == HIGH;
+      }
+      if (DEBUG == HIGH) {//ENTER ALL DEBUG RELATED TOOLS HERE \/\/\/
+        if (incomingbyte == "DEBUG - OUTPUT = ON"){
+          DEBUG_OUTPUT == HIGH;
+          digitalWrite(3, HIGH);
+        }
+        
+      }
+
+
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //Input Data scripts below|
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
