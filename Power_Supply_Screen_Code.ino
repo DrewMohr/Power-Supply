@@ -41,7 +41,6 @@ Adafruit_SSD1306 display(OLED_RESET); //Do not move position
 //variables start
 
 int output;
-int incomingByte = 0;
 int cycle = 0;
 int fan;
 int fan_count;
@@ -50,6 +49,17 @@ int buttonCurrent;
 int buttonPrevious = LOW;
 int tempWarn;
 int tempWarn_count;
+//DEBUG
+  int DEBUG;
+  int DEBUG_SHORT;
+  int DEBUG_OUTPUT;
+  int DEBUG_READY;
+  int DEBUG_BACKLIGHT;
+  int DEBUG_TEMP_OVERHEAT;
+  int DEBUG_RESET;
+  int DEBUG_FAN;
+String incomingbyte = "";
+
 
 int ThermistorPin = A3;
 int Vo;
