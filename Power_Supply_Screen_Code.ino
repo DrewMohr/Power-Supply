@@ -223,6 +223,38 @@ void setup() {
 
   void loop() {
     
+     incomingbyte = Serial.readString();
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//DEBUG/development tools below
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      if (incomingbyte == "DEBUG = ENABLED") {  //TYPE "DEBUG = ENABLED" IN CONSOLE TO ENTER DEBUG
+        Serial.print("[DEBUG]-[001]-> ");
+        Serial.println("ENTERING DEBUG MODE");
+        delay(3000);
+        DEBUG == HIGH;
+      }
+
+      if (DEBUG == HIGH) {//ENTER ALL DEBUG RELATED TOOLS HERE \/\/\/
+        if (incomingbyte == "DEBUG > OUTPUT = ON"){
+          DEBUG_OUTPUT == HIGH;
+          Serial.print("[DEBUG]-[001]-> ");
+          Serial.println("OUTPUT - ACTIVE");
+        }
+        if(incomingbyte == "DEBUG > READY = ON") {
+          DEBUG_READY == HIGH;
+          Serial.print("[DEBUG]-[001]-> ");
+          Serial.println("READY - READY");
+        }
+
+      
+        
+      
+        
+  
+
+  }
+
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //Input Data scripts below|
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -253,7 +285,7 @@ void setup() {
     display.setCursor(0,10);
 
 
-  if (digitalRead(3) == LOW){      //OUTPUT STATUS
+  if (digitalRead(3) == LOW || DEBUG_OUTPUT == HIGH){      //OUTPUT STATUS
     display.print("OFF");
     analogWrite(5, 0);
     display.display();
@@ -311,7 +343,8 @@ void setup() {
     display.setTextColor(WHITE);
     display.setTextSize(0);
     display.setCursor(95,10);
-        if (digitalRead(6) == HIGH) {
+
+        if (digitalRead(6) == HIGH || DEBUG_READY == HIGH) {
       display.print("READY");
         Serial.println("READY");
     
@@ -346,7 +379,8 @@ void setup() {
     display.setTextColor(WHITE);
     display.setTextSize(0);
     display.setCursor(56,10);
-        if (digitalRead(7) == HIGH) {
+
+        if (digitalRead(7) == HIGH || DEBUG_SHORT == HIGH) {
       display.print("OK");
         Serial.println("OK");
     
@@ -404,7 +438,7 @@ void setup() {
 
 
                                   //PANEL BACKLIGHT STATUS
-    if (analogRead(A1) >= 480) {
+    if (analogRead(A1) >= 480 || DEBUG_BACKLIGHT == HIGH) {
 
       digitalWrite(A7, LOW);
         display.drawRect(2, 26, 5, 5, WHITE);
@@ -456,7 +490,7 @@ void setup() {
         display.setTextSize(1);
         display.setCursor(20,17);
 
-    if (T >= 100) {
+    if (T >= 100 || DEBUG_TEMP_OVERHEAT == HIGH)  {
      tempWarn_count = tempWarn_count + 1;
      tempWarn = HIGH;
      display.print("WARNING TEMP HIGH");
