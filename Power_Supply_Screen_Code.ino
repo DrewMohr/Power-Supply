@@ -223,36 +223,38 @@ void setup() {
 
   void loop() {
     
-     incomingbyte = Serial.readString();
+     //incomingbyte = Serial.readString();
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //DEBUG/development tools below
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      if (incomingbyte == "DEBUG = ENABLED") {  //TYPE "DEBUG = ENABLED" IN CONSOLE TO ENTER DEBUG
+    /*  if (incomingbyte == 'DEBUG = ENABLED') {  //TYPE "DEBUG = ENABLED" IN CONSOLE TO ENTER DEBUG
         Serial.print("[DEBUG]-[001]-> ");
         Serial.println("ENTERING DEBUG MODE");
         delay(3000);
         DEBUG == HIGH;
       }
 
-      if (DEBUG == HIGH) {//ENTER ALL DEBUG RELATED TOOLS HERE \/\/\/
-        if (incomingbyte == "DEBUG > OUTPUT = ON"){
-          DEBUG_OUTPUT == HIGH;
+      //if (DEBUG == HIGH) {//ENTER ALL DEBUG RELATED TOOLS HERE \/\/\/
+        if (incomingbyte == 'DEBUG > OUTPUT = ON'){
+          
           Serial.print("[DEBUG]-[001]-> ");
           Serial.println("OUTPUT - ACTIVE");
+          DEBUG_OUTPUT == HIGH;
         }
-        if(incomingbyte == "DEBUG > READY = ON") {
-          DEBUG_READY == HIGH;
+        if(incomingbyte == 'DEBUG > READY = ON') {
+          
           Serial.print("[DEBUG]-[001]-> ");
           Serial.println("READY - READY");
+          DEBUG_READY == HIGH;
         }
 
-      
+      */
         
       
         
   
 
-  }
+ // }
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -285,7 +287,7 @@ void setup() {
     display.setCursor(0,10);
 
 
-  if (digitalRead(3) == LOW || DEBUG_OUTPUT == HIGH){      //OUTPUT STATUS
+  if (digitalRead(3) == LOW){      //OUTPUT STATUS
     display.print("OFF");
     analogWrite(5, 0);
     display.display();
@@ -344,7 +346,7 @@ void setup() {
     display.setTextSize(0);
     display.setCursor(95,10);
 
-        if (digitalRead(6) == HIGH || DEBUG_READY == HIGH) {
+        if (digitalRead(6) == HIGH) {
       display.print("READY");
         Serial.println("READY");
     
@@ -380,7 +382,7 @@ void setup() {
     display.setTextSize(0);
     display.setCursor(56,10);
 
-        if (digitalRead(7) == HIGH || DEBUG_SHORT == HIGH) {
+        if (digitalRead(7) == HIGH) {
       display.print("OK");
         Serial.println("OK");
     
@@ -438,7 +440,7 @@ void setup() {
 
 
                                   //PANEL BACKLIGHT STATUS
-    if (analogRead(A1) >= 480 || DEBUG_BACKLIGHT == HIGH) {
+    if (analogRead(A1) >= 480) {
 
       digitalWrite(A7, LOW);
         display.drawRect(2, 26, 5, 5, WHITE);
@@ -466,7 +468,7 @@ void setup() {
   T = (1.0 / (c1 + c2*logR2 + c3*logR2*logR2*logR2));
   T = T - 273.15;
   T = (T * 9.0)/ 5.0 + 32.0; 
-
+  
 
   Serial.print("Temperature: "); 
   Serial.print(T);
@@ -490,7 +492,7 @@ void setup() {
         display.setTextSize(1);
         display.setCursor(20,17);
 
-    if (T >= 100 || DEBUG_TEMP_OVERHEAT == HIGH)  {
+    if (T >= 100)  {
      tempWarn_count = tempWarn_count + 1;
      tempWarn = HIGH;
      display.print("WARNING TEMP HIGH");
@@ -552,9 +554,9 @@ void setup() {
 
   //~~~~~
 
-
-        cycle = cycle + 1; //~~~~~KEEP THESE LAST OF VOID LOOP
-        fan_count = fan_count + 1; //THIS TOO
+Serial.println(T);
+        //cycle = cycle + 1; //~~~~~KEEP THESE LAST OF VOID LOOP
+        //fan_count = fan_count + 1; //THIS TOO
         //buttonCurrent = buttonPrevious;
 
 }
