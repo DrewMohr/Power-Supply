@@ -30,6 +30,7 @@
 #include <Adafruit_Sensor.h> //Temp
 #include <DHT.h> //DHT
 #include <Servo.h> //Servo
+#include <EEPROM.h>
 
 
 #define OLED_RESET 13  //keep this before one below!!!
@@ -49,6 +50,8 @@ int buttonCurrent;
 int buttonPrevious = LOW;
 int tempWarn;
 int tempWarn_count;
+int tempAlarm;
+int varSize;
 //DEBUG
   int DEBUG;
   int DEBUG_SHORT;
@@ -58,7 +61,27 @@ int tempWarn_count;
   int DEBUG_TEMP_OVERHEAT;
   int DEBUG_RESET;
   int DEBUG_FAN;
+
 String incomingbyte = "";
+//EEPROM
+
+    //EEPROM ADDRESSES
+      int epaddress_00;
+      int epaddress_01;
+      int epaddress_02;
+      int epaddress_03;
+      int epaddress_04;
+      int epaddress_05;
+      int epaddress_06;
+      int epaddress_07;
+      int epaddress_08;
+      int epaddress_09;
+      int epaddress_10;
+
+
+    //EEPROM VAIRABLES
+      int ep_adrr_00_backlight;
+
 
 
 int ThermistorPin = A3;
@@ -92,12 +115,24 @@ void setup() {
   delay(200);
   display.cp437(true);
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//STORAGE : RAM : EEPROM \/\/\/
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  //int varSize = sizeof(output) + sizeof(cycle) + sizeof(fan) + sizeof(fan_count) + sizeof(button) + sizeof(buttonCurrent) + sizeof(buttonPrevious) + sizeof(tempWarn) + sizeof(tempWarn_count) + sizeof(DEBUG_BACKLIGHT) + sizeof(DEBUG_FAN) + sizeof(DEBUG_OUTPUT) + sizeof(DEBUG_READY) + sizeof(DEBUG_RESET) + sizeof(DEBUG_SHORT) + sizeof(DEBUG_TEMP_OVERHEAT);
+  
+  //EEPROM [RAM]
+  //ie. EEPROM.function(addr, val/0-255)
+
+    //ep_adrr_00_backlight = EEPROM.read(epaddress_00);
 
 
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Serial.println("TEST STATUS LIGHTS");
-  analogWrite(5, 250);
-  analogWrite(A0, 250);
-  analogWrite(11, 250);
+  analogWrite(5, 250); //green light
+  analogWrite(A0, 250); //red light
+  analogWrite(11, 250); //yellow light
   digitalWrite(A3, HIGH);
   delay(250);
   analogWrite(5, 0);
@@ -105,6 +140,7 @@ void setup() {
   analogWrite(11, 0);
   digitalWrite(A3, LOW);
   delay(10);
+  /*
       Serial.println("---STARTING---");
   display.clearDisplay();
   display.setTextColor(WHITE);
@@ -122,6 +158,12 @@ void setup() {
   display.display();
     Serial.println("STARTING UP..");
   delay(200);
+  */
+
+
+
+
+
   display.clearDisplay();
   display.setTextColor(WHITE);
   display.setTextSize(0);
@@ -156,6 +198,8 @@ void setup() {
      Serial.print("<< DEVELOPMENT BUILD:  ");
      Serial.print(dv);
      Serial.println(" >>");
+     //Serial.print("Variable Size: ");
+     //Serial.println(varSize);
      Serial.println("--------------------------------------------------");
      
       
@@ -200,23 +244,62 @@ void setup() {
     delay(100);
   Serial.println("---STARTING USER INTERFACE---");
   delay(100);
+  display.clearDisplay();
 
-
+  digitalWrite(A2, HIGH);
+  delay(150);
+  digitalWrite(A2, LOW);
+  delay(150);
+  digitalWrite(A2, HIGH);
+  delay(150);
+  digitalWrite(A2, LOW);
   
+//WARNING NOTICE SPLASH
+
+  while(digitalRead(9) == LOW){
+
+    display.setTextColor(WHITE);
+      display.setTextSize(0);
+      display.setCursor(0,0);
+      display.print("      ! WARNING !");
+      display.display();
+
+      display.setTextColor(WHITE);
+      display.setTextSize(0);
+      display.setCursor(0,9);
+      display.print("RISK OF SHOCK, PLEASE USE CAUTION");
+      display.display();
+
+      display.setTextColor(WHITE);
+      display.setTextSize(0);
+      display.setCursor(0,26);
+      display.print("          OK");
+      display.display();
+
+      digitalWrite(A0, HIGH);
+      delay(100);
+      digitalWrite(A0, LOW);
+  
+
+  }
+
+
+
   fan_count = 0;
   tempWarn_count = 0;
   tempWarn = LOW;
-  //END
   display.clearDisplay();
+  //END
+  
     
  }
  
-
-
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 
@@ -256,6 +339,16 @@ void setup() {
 
  // }
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//STORAGE : RAM : EEPROM   \/\/\/
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    ep_adrr_00_backlight = EEPROM.read(epaddress_00);
+
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //Input Data scripts below|
@@ -265,16 +358,16 @@ void setup() {
     Serial.print("CYCLE ");
      Serial.println(cycle);
     Serial.println("--CHECK--"); //~~~~CHECK
-
-  //display.setTextColor(WHITE);
-  //display.setTextSize(0);
-  //display.setCursor(45,25);
-  //display.print("CYCLE ");
-  //display.setTextColor(WHITE);
-  //display.setTextSize(0);
-  //display.setCursor(83,25);
-  //display.print(cycle);
-     
+/*
+  display.setTextColor(WHITE);
+  display.setTextSize(0);
+  display.setCursor(45,25);
+  display.print("CYCLE ");
+  display.setTextColor(WHITE);
+  display.setTextSize(0);
+  display.setCursor(83,25);
+  display.print(cycle);
+*/ 
     
   display.setTextColor(WHITE);
     display.setTextSize(0);
@@ -504,6 +597,24 @@ void setup() {
      tempWarn_count = 0;
      tempWarn = LOW;
       }
+
+
+
+     if (T >= 120) {
+        digitalWrite(8, HIGH);
+     tempAlarm = HIGH;
+     digitalWrite(A2, HIGH);
+     delay(100);
+     digitalWrite(A2, LOW);
+     Serial.println("[!]-ALARM-[!]-- TEMPERATURE HAS REACHED >120*F");
+     Serial.println("[!]-ALARM-[!]-- LM317 MAX TEMP IS 125*F");
+      }
+    else {
+        digitalWrite(8, LOW);
+     tempAlarm = LOW;
+      }
+
+
 
 
     if (tempWarn_count == 1) {
