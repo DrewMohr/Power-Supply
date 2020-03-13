@@ -56,15 +56,9 @@ void setup() {
   
   // Setup~~
   analogWrite(3, 0);
-  tone(A1, 1000, 100); // play tone 70 (A#5 = 932 Hz)
-  delay(100);
-  tone(A1, 1200, 100);
-  delay(100);
-  tone(A1, 1400, 100);
-  delay(100);
-  tone(A1, 1600, 100);
-  delay(100);
-  tone(A1, 1800, 100);
+  tone(A1, 2793.83, 300); // play tone F#7
+  delay(300);
+  tone(A1, 2217.46, 300); // play tone C#7
   delay(100);
   delay(500); // Wait for 500 millisecond(s)
   // Start up test begin
@@ -110,9 +104,7 @@ void setup() {
   digitalWrite(13, LOW);
   delay(500); // Wait for 500 millisecond(s)
   digitalWrite(7, LOW);
-  tone(A1, 1500, 90);
   delay(100);
-  tone(A1, 1500, 90);
   analogWrite(5, 50);
   
   digitalWrite(13, HIGH);
