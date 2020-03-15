@@ -52,6 +52,7 @@ int tempWarn;
 int tempWarn_count;
 int tempAlarm;
 int varSize;
+int debug_settings_timer;
 //DEBUG
   int DEBUG;
   int DEBUG_SHORT;
@@ -306,6 +307,7 @@ void setup() {
 
   void loop() {
     
+
      //incomingbyte = Serial.readString();
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //DEBUG/development tools below
@@ -353,9 +355,7 @@ void setup() {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //Input Data scripts below|
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    digitalWrite(A0, LOW);
-    display.drawCircle(40, 28, 3, WHITE);
-
+    
 /*
   display.setTextColor(WHITE);
   display.setTextSize(0);
@@ -366,7 +366,22 @@ void setup() {
   display.setCursor(83,25);
   display.print(cycle);
 */ 
-    
+
+
+if (debug_settings_timer == 5) {
+  display.clearDisplay();
+  display.setTextColor(WHITE);
+    display.setTextSize(0);
+    display.setCursor(0,0);
+    display.print("SETTINGS");
+    display.display();
+
+}
+else {
+  //debug_settings_timer = debug_settings_timer + 1;
+  digitalWrite(A0, LOW);
+    display.drawCircle(40, 28, 3, WHITE); 
+
   display.setTextColor(WHITE);
     display.setTextSize(0);
     display.setCursor(0,0);
@@ -668,8 +683,8 @@ Serial.println(T);
         //fan_count = fan_count + 1; //THIS TOO
         //buttonCurrent = buttonPrevious;
 
+  }
 }
-
 
 
 
