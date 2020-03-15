@@ -355,9 +355,7 @@ void setup() {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     digitalWrite(A0, LOW);
     display.drawCircle(40, 28, 3, WHITE);
-    Serial.print("CYCLE ");
-     Serial.println(cycle);
-    Serial.println("--CHECK--"); //~~~~CHECK
+
 /*
   display.setTextColor(WHITE);
   display.setTextSize(0);
@@ -385,7 +383,7 @@ void setup() {
     analogWrite(5, 0);
     display.display();
     display.clearDisplay();
-      Serial.println("OUTPUT--OFF");
+      //Serial.println("OUTPUT--OFF");
     
   }
     else {
@@ -393,7 +391,7 @@ void setup() {
     digitalWrite(5, HIGH);
     display.display();
     display.clearDisplay();
-      Serial.println("OUTPUT--ACTIVE");
+      //Serial.println("OUTPUT--ACTIVE");
   }
 
 
@@ -441,11 +439,11 @@ void setup() {
 
         if (digitalRead(6) == HIGH) {
       display.print("READY");
-        Serial.println("READY");
+        //Serial.println("READY");
     
   }
       else {
-          Serial.println("--WARNING!--NOT READY--");
+          //Serial.println("--WARNING!--NOT READY--");
         display.setCursor(70,0);
         display.clearDisplay();
         display.print("NOT READY");
@@ -477,12 +475,12 @@ void setup() {
 
         if (digitalRead(7) == HIGH) {
       display.print("OK");
-        Serial.println("OK");
+        //Serial.println("OK");
     
   }
       else {
 
-          Serial.println("SHORT CIRCUIT");
+          //Serial.println("SHORT CIRCUIT");
         display.setCursor(50,0);
         display.print("SHORT");
         digitalWrite(A2, HIGH);
