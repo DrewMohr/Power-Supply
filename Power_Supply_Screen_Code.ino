@@ -1,26 +1,36 @@
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //Andrew Mohr 2019-2020
-//Version: Alpha Build 0.8.7
-//Date Started: 1/18/2020 11:07pms
-//Last Date Offically Updated: 2/20/2020 04:29pm
+//Version: Beta Build 1.2.1
+//Date Started: 1/18/2020 11:07pm
+//Last Date Offically Updated: 4/2/2020 12:36am
 //--------------------------------------------------
 //           CHANGE LOG BELOW
 //                Format:
 // M/D/Y HH:MMam/pm | v.VERSION x.y.z 
 // -- Changes
 //--------------------------------------------------
-// 1/18/2020 11:07pm | v.Alpha 0.0.1 
+// 01/18/2020 11:07pm | v.Alpha 0.0.1 
 // -- Script Created
 
 // ***Log from 1/18/2020 to 1/30/2020 not recorded***
 
-// 1/30/2020 03:01pm | v.Alpha 0.8.5 
+// 01/30/2020 03:01pm | v.Alpha 0.8.5 
 // -- Change Log Created
-// 
-// 2/10/2020 10:22pm | v.Alpha 0.8.7
+
+// 02/10/2020 10:22pm | v.Alpha 0.8.7
 // -- Added Temperature Monitoring
 // -- Debugging
+// -- Bug fixes
+
+// 04/02/2020 12:36am | v.Beta 1.2.1
+// -- Moved into Beta!
+// -- Added support for new users (added a first startup setup)
+// -- Got EEPROM/memory systems up and RUNNING
+// -- Bug fixes
+//    Issues:
+//    -- Short circuit light will blink at random on some controllers
+//    -- Performance
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
@@ -29,7 +39,6 @@
 #include <Adafruit_SSD1306.h> //Display Library
 #include <Adafruit_Sensor.h> //Temp
 #include <DHT.h> //DHT
-#include <Servo.h> //Servo
 #include <EEPROM.h>
 
 
@@ -42,47 +51,28 @@ Adafruit_SSD1306 display(OLED_RESET); //Do not move position
 //variables start
 
 int output;
-int cycle = 0;
 int fan;
-int fan_count;
-int button = 3;
-int buttonCurrent;
-int buttonPrevious = LOW;
 int tempWarn;
 int tempWarn_count;
 int tempAlarm;
-int varSize;
 int debug_settings_timer;
-//DEBUG
-  int DEBUG;
-  int DEBUG_SHORT;
-  int DEBUG_OUTPUT;
-  int DEBUG_READY;
-  int DEBUG_BACKLIGHT;
-  int DEBUG_TEMP_OVERHEAT;
-  int DEBUG_RESET;
-  int DEBUG_FAN;
+int board_state;
+  
 
-String incomingbyte = "";
 //EEPROM
 
     //EEPROM ADDRESSES
-      int epaddress_00;
       int epaddress_01;
       int epaddress_02;
       int epaddress_03;
       int epaddress_04;
-      int epaddress_05;
-      int epaddress_06;
-      int epaddress_07;
-      int epaddress_08;
-      int epaddress_09;
-      int epaddress_10;
 
 
     //EEPROM VAIRABLES
-      int ep_adrr_00_backlight;
-
+      int ep_addr_01_boardstate;
+      int ep_addr_02_backlight;
+      int ep_addr_03_invertdisplay;
+      int ep_addr_04_startups;
 
 
 int ThermistorPin = A3;
@@ -91,16 +81,15 @@ float R1 = 10000;
 float logR2, R2, T;
 float c1 = 1.009249522e-03, c2 = 2.378405444e-04, c3 = 2.019202697e-07;
 
-String disv = "A0.8.7";
-String v = "Alpha Build 0.8.7"; //Release Version-------------------------------UPDATE THIS WHEN UPDATING
-String dv = "dev.prealpha-0.8.8w26"; //Development Version----------------------THIS TOO DAMMIT
+String disv = "B1.2.1";
+String v = "Alpha Build 1.2.1"; //Release Version-------------------------------UPDATE THIS WHEN UPDATING
+String dv = "dev.prebeta-1.2.2r1"; //Development Version----------------------THIS TOO DAMMIT
 
 //variables end
 
 
 
 void setup() {
-
   
 //Pinmode start  
   pinMode(A2, OUTPUT);
@@ -109,28 +98,59 @@ void setup() {
 
     Serial.println("SERIAL BAUD SET = 9600");
         Serial.begin(9600);
-  display.clearDisplay();
   Wire.begin();
   display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
     Serial.println("INITIALIZING DISPLAY >> 0x3c");
   delay(200);
   display.cp437(true);
+  display.clearDisplay();
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //STORAGE : RAM : EEPROM \/\/\/
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  //int varSize = sizeof(output) + sizeof(cycle) + sizeof(fan) + sizeof(fan_count) + sizeof(button) + sizeof(buttonCurrent) + sizeof(buttonPrevious) + sizeof(tempWarn) + sizeof(tempWarn_count) + sizeof(DEBUG_BACKLIGHT) + sizeof(DEBUG_FAN) + sizeof(DEBUG_OUTPUT) + sizeof(DEBUG_READY) + sizeof(DEBUG_RESET) + sizeof(DEBUG_SHORT) + sizeof(DEBUG_TEMP_OVERHEAT);
-  
-  //EEPROM [RAM]
-  //ie. EEPROM.function(addr, val/0-255)
+//EEPROM [RAM]
+  //ie. EEPROM.[function](addr, val/0-255)
 
-    //ep_adrr_00_backlight = EEPROM.read(epaddress_00);
+    //Address assignment
+    /*
+        ep_addr_00_boardstate = EEPROM.read(epaddress_00);
+        ep_addr_01_backlight = EEPROM.read(epaddress_01);
+        ep_addr_02_invertdisplay = EEPROM.read(epaddress_02);
+        ep_addr_03_startups = EEPROM.read(epaddress_03);
+
+        EEPROM.write(0, ep_addr_00_boardstate);
+        EEPROM.write(1, ep_addr_01_backlight);
+        EEPROM.write(2, ep_addr_02_invertdisplay);
+        EEPROM.write(3, ep_addr_03_startups);
+      */    
+          
+          
+    //Address setup programming
+    /*
+        if(ep_addr_02_invertdisplay == 1){
+          display.invertDisplay(true);
+        }
+        else{
+          display.invertDisplay(false);
+        }
+       */ 
+
+        if(EEPROM.read(1) == 1){
+          board_state = 1;
+        }
+        else{
+          board_state = 0;
+          
+        }
+        
 
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Serial.println("TEST STATUS LIGHTS");
+//Begin
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //Serial.println("TEST STATUS LIGHTS");
   analogWrite(5, 250); //green light
   analogWrite(A0, 250); //red light
   analogWrite(11, 250); //yellow light
@@ -140,48 +160,15 @@ void setup() {
   analogWrite(A0, 0);
   analogWrite(11, 0);
   digitalWrite(A3, LOW);
-  delay(10);
-  /*
-      Serial.println("---STARTING---");
-  display.clearDisplay();
-  display.setTextColor(WHITE);
-  display.setTextSize(0);
-  display.setCursor(0,0);
-  display.print("STARTING UP.");
-  display.display();
-    Serial.println("STARTING UP.");
-  delay(200);
-  display.clearDisplay();
-  display.setTextColor(WHITE);
-  display.setTextSize(0);
-  display.setCursor(0,0);
-  display.print("STARTING UP..");
-  display.display();
-    Serial.println("STARTING UP..");
-  delay(200);
-  */
+  
 
 
-
-
-
-  display.clearDisplay();
-  display.setTextColor(WHITE);
-  display.setTextSize(0);
-  display.setCursor(0,0);
-  display.print("STARTING UP...");
-  display.display();
-     Serial.println("STARTING UP...");
-   display.clearDisplay();
-  delay(200);
-    Serial.println("DONE");
   display.setTextColor(WHITE);
   display.setTextSize(2);
   display.setCursor(0,8);
   display.print("  WELCOME");
   display.display();
-    Serial.println("SUCCESS");
-  delay(1500);
+  delay(1000);
  
 
 
@@ -192,42 +179,25 @@ void setup() {
   display.print("    VERSION-");
   display.print(              disv);
   display.display();
-     Serial.println("--------------------------------------------------");
-     Serial.print("<< RUNNING VERSION:  ");     
+     
+     Serial.print("<<RUNNING VERSION: ");     
      Serial.print(v);
-     Serial.println(" >>");
-     Serial.print("<< DEVELOPMENT BUILD:  ");
+     Serial.println(">>");
+     Serial.print("<<DEVELOPMENT BUILD: ");
      Serial.print(dv);
-     Serial.println(" >>");
-     //Serial.print("Variable Size: ");
-     //Serial.println(varSize);
-     Serial.println("--------------------------------------------------");
+     Serial.println(">>");
+     
      
       
       
 
-  delay(2000);
+  delay(1000);
 
 
 
 
   //PLACE INT AND OTHER STARTUP MATERIAL HERE \/\/\/
 
-  
-  display.setTextColor(WHITE);
-    display.setTextSize(0);
-    display.setCursor(25,25);
-    display.print("   LOADING...");
-    display.display();
-    Serial.println("LOADING");
-    delay(1000);
-    display.clearDisplay();
-
-  display.setTextColor(WHITE);
-    display.setTextSize(2);
-    display.setCursor(0,8);
-    display.print("  WELCOME");
-    display.display();
   
   
   display.setTextColor(WHITE);
@@ -241,23 +211,24 @@ void setup() {
     display.setCursor(0,25);
     display.print("        DONE!");
     display.display();
-    Serial.println("---DONE!---");
+    
     delay(100);
-  Serial.println("---STARTING USER INTERFACE---");
+  
   delay(100);
   display.clearDisplay();
 
-  digitalWrite(A2, HIGH);
-  delay(150);
-  digitalWrite(A2, LOW);
-  delay(150);
-  digitalWrite(A2, HIGH);
-  delay(150);
-  digitalWrite(A2, LOW);
+  
   
 //WARNING NOTICE SPLASH
-
-  while(digitalRead(9) == LOW){
+/*
+  digitalWrite(A2, HIGH);
+  delay(150);
+  digitalWrite(A2, LOW);
+  delay(150);
+  digitalWrite(A2, HIGH);
+  delay(150);
+  digitalWrite(A2, LOW);
+*/ 
 
     display.setTextColor(WHITE);
       display.setTextSize(0);
@@ -268,28 +239,117 @@ void setup() {
       display.setTextColor(WHITE);
       display.setTextSize(0);
       display.setCursor(0,9);
-      display.print("RISK OF SHOCK, PLEASE USE CAUTION");
+      display.print("RISK OF SHOCK, PLEASE    USE CAUTION");
       display.display();
 
-      display.setTextColor(WHITE);
-      display.setTextSize(0);
-      display.setCursor(0,26);
-      display.print("          OK");
-      display.display();
+      
 
       digitalWrite(A0, HIGH);
       delay(100);
       digitalWrite(A0, LOW);
+      delay(300);
+      digitalWrite(A0, HIGH);
+      delay(100);
+      digitalWrite(A0, LOW);
+      delay(300);
+
+      display.clearDisplay();
   
+//Automatic board setup
+
+  if(board_state == 0){
+      digitalWrite(A0, HIGH);
+      delay(300);
+      digitalWrite(A0, LOW);
+      delay(300);
+      digitalWrite(A0, HIGH);
+      delay(300);
+      digitalWrite(A0, LOW);
+      delay(300);
+
+      display.setTextColor(WHITE);
+      display.setTextSize(0);
+      display.setCursor(0,0);
+      display.print("AUTOMATIC SETUP:");
+      display.display();
+      delay(500);
+      display.setTextColor(WHITE);
+      display.setTextSize(0);
+      display.setCursor(0,25);
+      display.print("   Loading...");
+      display.display();
+    Serial.println("Resetting all EEPROM/memory states to 0");
+/*
+    epaddress_00 = 0;
+    epaddress_01 = 0;
+    epaddress_02 = 0;
+    epaddress_03 = 0;
+*/
+    EEPROM.write(1, 0);
+    EEPROM.write(2, 0);
+    EEPROM.write(3, 0);
+    EEPROM.write(4, 0);
+
+    Serial.println("All EEPROM/memory has been succesfully reset to 0");
+    delay(1000);
+    Serial.println("Finishing up...");
+      
+      display.clearDisplay();
+
+      display.setTextColor(WHITE);
+      display.setTextSize(0);
+      display.setCursor(0,0);
+      display.print("AUTOMATIC SETUP:");
+      display.display();
+      delay(300);
+      display.setTextColor(WHITE);
+      display.setTextSize(0);
+      display.setCursor(0,25);
+      display.print("  Finishing up...");
+      display.display();
+        //Setting up for use:
+          //ep_addr_00_boardstate = 1;
+          EEPROM.write(1, 1);
+        //Setting up startup counter:
+          //ep_addr_03_startups = 0;
+          EEPROM.write(2, 0);
+    delay(2500);
+
+    Serial.println("All done!");
+    Serial.println("Your unit is now ready to be used.");
+    Serial.println("Please Reset to apply");
+
+    display.clearDisplay();
+
+      display.setTextColor(WHITE);
+      display.setTextSize(0);
+      display.setCursor(0,0);
+      display.print("AUTOMATIC SETUP:");
+      display.display();
+      delay(1000);
+      display.setTextColor(WHITE);
+      display.setTextSize(0);
+      display.setCursor(0,25);
+      display.print("PLEASE RESET TO APPLY");
+      display.display();
+      display.setTextColor(WHITE);
+      display.setTextSize(0);
+      display.setCursor(0,15);
+      display.print("      ALL DONE");
+      display.display();
+      analogWrite(A0, 255);
+      delay(9999999);
 
   }
+  
 
 
-
-  fan_count = 0;
+  ep_addr_04_startups = ep_addr_04_startups + 1;
   tempWarn_count = 0;
   tempWarn = LOW;
   display.clearDisplay();
+  //debug:
+  //ep_addr_00_boardstate = 0;
   //END
   
     
@@ -345,7 +405,7 @@ void setup() {
 //STORAGE : RAM : EEPROM   \/\/\/
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    ep_adrr_00_backlight = EEPROM.read(epaddress_00);
+    
 
 
 
@@ -510,34 +570,8 @@ else {
         delay(50);
         analogWrite(11, 125);
         delay(50);
-        analogWrite(11, 150);
-        delay(50);
-        analogWrite(11, 175);
-        delay(50);
-        analogWrite(11, 200);
-        delay(50);
-        analogWrite(11, 225);
-        delay(200);
         analogWrite(11, 255);
-        delay(50);
-        analogWrite(11, 225);
-        delay(50);
-        analogWrite(11, 200);
-        delay(50);
-        analogWrite(11, 175);
-        delay(50);
-        analogWrite(11, 150);
-        delay(50);
-        analogWrite(11, 125);
-        delay(50);
-        analogWrite(11, 100);
-        delay(50);
-        analogWrite(11, 75);
-        delay(50);
-        analogWrite(11, 50);
-        delay(50);
-        analogWrite(11, 25);
-        delay(50);
+        delay(100);
         analogWrite(11, 0);
         delay(200);
 
@@ -602,7 +636,6 @@ else {
      tempWarn_count = tempWarn_count + 1;
      tempWarn = HIGH;
      display.print("WARNING TEMP HIGH");
-     Serial.print("[!]-ALARM-[!]-- ");
      Serial.println("WARNING TEMPERATURE REACHED >100*F");
      
       }
@@ -619,8 +652,8 @@ else {
      digitalWrite(A2, HIGH);
      delay(100);
      digitalWrite(A2, LOW);
-     Serial.println("[!]-ALARM-[!]-- TEMPERATURE HAS REACHED >120*F");
-     Serial.println("[!]-ALARM-[!]-- LM317 MAX TEMP IS 125*F");
+     Serial.println("TEMPERATURE HAS REACHED >120*F");
+     Serial.println("LM317 MAX TEMP IS 125*F");
       }
     else {
         digitalWrite(8, LOW);
@@ -678,19 +711,9 @@ else {
 
   //~~~~~
 
-Serial.println(T);
         //cycle = cycle + 1; //~~~~~KEEP THESE LAST OF VOID LOOP
         //fan_count = fan_count + 1; //THIS TOO
         //buttonCurrent = buttonPrevious;
 
   }
 }
-
-
-
-
-
-
-
-
-
