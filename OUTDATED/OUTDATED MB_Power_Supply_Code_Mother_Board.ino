@@ -1,4 +1,5 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//Power Supply Board A10 (Motherboard)
 //Andrew Mohr 2019-2020
 //Version: Beta 2.2.4.7
 //Date Started: 12/10/2019 09:24pm
@@ -39,12 +40,13 @@ String dv = "dev.prealpha-0.8.8w26"; //Development Version----------------------
   //Variables End
 
 void setup() {
+
   Serial.begin(9600);
   
   pinMode(A1, OUTPUT);
   pinMode(A0, OUTPUT);
   pinMode(A2, OUTPUT);
-  pinMode(A7, OUTPUT); 
+  pinMode(A6, OUTPUT); 
   
 
   pinMode(3, OUTPUT);
@@ -58,7 +60,8 @@ void setup() {
   pinMode(6, OUTPUT);
   pinMode(button, INPUT);
   pinMode(output, OUTPUT);
-  
+  Serial.println("EXIT 00-00");
+
   // Setup~~
   analogWrite(3, 0);
   tone(A1, 2793.83, 300); // play tone F#7
@@ -69,8 +72,8 @@ void setup() {
   // Start up test begin
   Serial.println(v);
   Serial.println(dv);
-  Serial.println("DEBUG-----SEND - - - WAITING FOR CONFIRMATION...");
-  digitalWrite(10, HIGH);
+  
+  //digitalWrite(10, HIGH);
   digitalWrite(13, HIGH);
   digitalWrite(11, HIGH);
   
@@ -105,7 +108,7 @@ void setup() {
   digitalWrite(13, LOW);
   delay(500); // Wait for 500 millisecond(s)
   digitalWrite(13, HIGH);
-
+  Serial.println("EXIT 00-00");
 
   
   
@@ -127,26 +130,30 @@ void setup() {
     if (output == HIGH){
       output = LOW;
       digitalWrite(7, LOW);
-      digitalWrite(A7, LOW);
+      digitalWrite(10, LOW);
       analogWrite(5, 50);
+      Serial.println("EXIT 06-01");
     }
     else {
       output = HIGH;
       digitalWrite(7, HIGH);
-      digitalWrite(A7, HIGH);
+      digitalWrite(10, HIGH);
       analogWrite(5, 200);
+      Serial.println("EXIT 06-00");
     }
   }
 
   
                         //TMRS -- Temperature Monitoring and Regulatory System  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  if (digitalRead(A7) == HIGH) {
-      digitalWrite(5, HIGH);
+  if (digitalRead(10) == HIGH) {
+      analogWrite(5, 170);
       fan = HIGH;
+      Serial.println("EXIT 06-06");
     }
     else {
         analogWrite(5, 50);             //Change this for Preferance (When T is at an acceptable level, the fan will still spin - only slowly(50/255))
         //digitalWrite(5, LOW);         //Change this for Preferance (When T is at an acceptable level, the fan will halt)
+        Serial.println("EXIT 06-07");
     }
 
   

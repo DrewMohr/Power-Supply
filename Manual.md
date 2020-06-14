@@ -1,24 +1,106 @@
-Manual Last Updated: 2/29/2020 10:47pm
+--------------------------------
+Last Updated: 06/13/2020 07:05pm
+--------------------------------
 
 
-
- 1.    2.    3. 
- __    __    __
-/  \  /  \  /  \        4.     5.     6. 
-\__/  \__/  \__/    ------------------------
-                    | OUTPUT               |
-                    | ACTIVE   OK   READY  |
-                    |                      |
-                 7. | ( )   O TMPS: 75.50F | 8. 
-                    ------------------------
+--------------------------------
+DATA INFO:
+--------------------------------
 
 
+Exit Codes: (APPLIES FOR BOTH BOARDS [A100], [A10], [A20])
 
-1. Green Light - Output
-2. Yellow Light - Short Circuit Detected
-3. Red Light - General System Notification
-4. Output - "ACTIVE"/"OFF"
-5. Short Circuit Detection - "SHORT"/"OK"
-6. System Ready - "NOT READY"/"READY"
-7. Front Panel Backlight
-8. TMPS - Stands for "Temperature Monitoring -and- Regulatory System" - Shows the Temperature of the Heatsink
+   -EXIT 00 - [OK]
+      -EXIT 00-00 - EXIT STATUS       [OK]
+      -EXIT 00-21 - EEPROM ADDRESS 01 [OK]
+      -EXIT 00-22 - EEPROM ADDRESS 02 [OK]
+      -EXIT 00-23 - EEPROM ADDRESS 03 [OK]
+      -EXIT 00-24 - EEPROM ADDRESS 04 [OK]
+      -EXIT 00-25 - EEPROM ADDRESS 05 [OK]
+      -EXIT 00-26 - EEPROM ADDRESS 06 [OK]
+      -EXIT 00-27 - EEPROM ADDRESS 07 [OK]
+      -EXIT 00-28 - EEPROM ADDRESS 08 [OK]
+      -EXIT 00-29 - EEPROM ADDRESS 09 [OK]
+      -EXIT 00-30 - EEPROM ADDRESS 10 [OK]
+      -EXIT 00-31 - EEPROM ADDRESS 11 [OK]
+      -EXIT 00-32 - EEPROM ADDRESS 12 [OK]
+      -EXIT 00-33 - EEPROM ADDRESS 13 [OK]
+      -EXIT 00-34 - EEPROM ADDRESS 14 [OK]
+      -EXIT 00-35 - EEPROM ADDRESS 15 [OK]
+      -EXIT 00-36 - EEPROM ADDRESS 16 [OK]
+      -EXIT 00-37 - EEPROM ADDRESS 17 [OK]
+      -EXIT 00-38 - EEPROM ADDRESS 18 [OK]
+      -EXIT 00-39 - EEPROM ADDRESS 19 [OK]
+      -EXIT 00-40 - EEPROM ADDRESS 20 [OK]
+      -EXIT 00-41 - FULL EEPROM       [OK]
+      -EXIT 00-50 - RELAY 0           [OK]
+      -EXIT 00-51 - RELAY 1           [OK]
+
+   -EXIT 05 - [WARN]
+      -EXIT 05-00 - GENERAL WARN (MOSTLY UNUSED)
+      -EXIT 05-01 - 
+      -EXIT 05-02 - TEMPERATURE OF LM317 REACHED >100F / >37.7C
+      -EXIT 05-02 - TEMPERATURE OF LM317 REACHED >125F / >51.6C (OVERHEAT) (TEMPERATURE LM317 STARTS TO MELT IS ~125F / ~51.6C)
+      -EXIT 05-04 - AUTOSETUP NEEDS TO BE DONE - THIS SHOULD BE DONE AUTOMATICALLY
+      -EXIT 05-05 - AUTOSETUP WILL BEGIN
+
+   -EXIT 06 - [STATUS]
+      -EXIT 06-00 - OUTPUT ACTIVE
+      -EXIT 06-01 - OUTPUT OFF
+      -EXIT 06-02 - READY
+      -EXIT 06-03 - NOT READY
+      -EXIT 06-04 - NO SHORT CIRCUITS DETECTED
+      -EXIT 06-05 - SHORT CIRCUIT DETECTED
+      -EXIT 06-06 - FAN COOLING
+      -EXIT 06-07 - FAN IDLE 
+
+   -EXIT 10 - [ERROR]
+      -EXIT 10-00 - GENERAL ERROR (MOSTLY UNUSED)
+      -EXIT 10-21 - EEPROM ADDRESS 01 [ERR]
+      -EXIT 10-22 - EEPROM ADDRESS 02 [ERR]
+      -EXIT 10-23 - EEPROM ADDRESS 03 [ERR]
+      -EXIT 10-24 - EEPROM ADDRESS 04 [ERR]
+      -EXIT 10-25 - EEPROM ADDRESS 05 [ERR]
+      -EXIT 10-26 - EEPROM ADDRESS 06 [ERR]
+      -EXIT 10-27 - EEPROM ADDRESS 07 [ERR]
+      -EXIT 10-28 - EEPROM ADDRESS 08 [ERR]
+      -EXIT 10-29 - EEPROM ADDRESS 09 [ERR]
+      -EXIT 10-30 - EEPROM ADDRESS 10 [ERR]
+      -EXIT 10-31 - EEPROM ADDRESS 11 [ERR]
+      -EXIT 10-32 - EEPROM ADDRESS 12 [ERR]
+      -EXIT 10-33 - EEPROM ADDRESS 13 [ERR]
+      -EXIT 10-34 - EEPROM ADDRESS 14 [ERR]
+      -EXIT 10-35 - EEPROM ADDRESS 15 [ERR]
+      -EXIT 10-36 - EEPROM ADDRESS 16 [ERR]
+      -EXIT 10-37 - EEPROM ADDRESS 17 [ERR]
+      -EXIT 10-38 - EEPROM ADDRESS 18 [ERR]
+      -EXIT 10-39 - EEPROM ADDRESS 19 [ERR]
+      -EXIT 10-40 - EEPROM ADDRESS 20 [ERR]
+      -EXIT 10-41 - FULL EEPROM       [ERR]
+
+   -EXIT 20 - [FAIL]
+      -EXIT 20-00 - GENERAL FAILURE (MOSTLY UNUSED)
+      -EXIT 20-21 - EEPROM ADDRESS 01 [FAIL]
+      -EXIT 20-22 - EEPROM ADDRESS 02 [FAIL]
+      -EXIT 20-23 - EEPROM ADDRESS 03 [FAIL]
+      -EXIT 20-24 - EEPROM ADDRESS 04 [FAIL]
+      -EXIT 20-25 - EEPROM ADDRESS 05 [FAIL]
+      -EXIT 20-26 - EEPROM ADDRESS 06 [FAIL]
+      -EXIT 20-27 - EEPROM ADDRESS 07 [FAIL]
+      -EXIT 20-28 - EEPROM ADDRESS 08 [FAIL]
+      -EXIT 20-29 - EEPROM ADDRESS 09 [FAIL]
+      -EXIT 20-30 - EEPROM ADDRESS 10 [FAIL]
+      -EXIT 20-31 - EEPROM ADDRESS 11 [FAIL]
+      -EXIT 20-32 - EEPROM ADDRESS 12 [FAIL]
+      -EXIT 20-33 - EEPROM ADDRESS 13 [FAIL]
+      -EXIT 20-34 - EEPROM ADDRESS 14 [FAIL]
+      -EXIT 20-35 - EEPROM ADDRESS 15 [FAIL]
+      -EXIT 20-36 - EEPROM ADDRESS 16 [FAIL]
+      -EXIT 20-37 - EEPROM ADDRESS 17 [FAIL]
+      -EXIT 20-38 - EEPROM ADDRESS 18 [FAIL]
+      -EXIT 20-39 - EEPROM ADDRESS 19 [FAIL]
+      -EXIT 20-40 - EEPROM ADDRESS 20 [FAIL]
+      -EXIT 20-41 - FULL EEPROM       [FAIL]
+      -EXIT 20-50 - RELAY 0           [FAIL]
+      -EXIT 20-51 - RELAY 1           [FAIL]
+

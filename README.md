@@ -1,33 +1,53 @@
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Andrew Mohr 2019-2020
-Version: Beta Build 1.2.1
-Date Started: 1/18/2020 11:07pm
-Last Date Offically Updated: 4/2/2020 12:36am
---------------------------------------------------
-           CHANGE LOG BELOW
-                Format:
- M/D/Y HH:MMam/pm | v.VERSION x.y.z 
- -- Changes
---------------------------------------------------
- 01/18/2020 11:07pm | v.Alpha 0.0.1 
- -- Script Created
 
- ***Log from 1/18/2020 to 1/30/2020 not recorded***
- 
- 01/30/2020 03:01pm | v.Alpha 0.8.5 
- -- Change Log Created
 
- 02/10/2020 10:22pm | v.Alpha 0.8.7
- -- Added Temperature Monitoring
- -- Debugging
- -- Bug fixes
+Notes:
+    Watts = Voltage x Amperage 
 
- 04/02/2020 12:36am | v.Beta 1.2.1
- -- Moved into Beta!
- -- Added support for new users (added a first startup setup)
- -- Got EEPROM/memory systems up and RUNNING
- -- Bug fixes
-    Issues:
-    -- Short circuit light will blink at random on some controllers
-    -- Performance
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Sequence path:
+
+-Button press detected
+    -Start seq
+        -Testing
+            -Test Fan
+                -Rev to 100%
+            -Test Relay0 (R0)
+                -If R0 ok
+                    -[OK]
+                    -Send Exit=0
+                -If R0 fail
+                    -Send Exit=1
+                    -Show Fail message
+                    -[HALT]
+            -Test Relay1 (R1)
+                -If R1 ok
+                    -[OK]
+                    -Send Exit=0
+                -If R1 fail
+                    -Send Exit=1
+                    -Show Fail message
+                    -[HALT]
+            -Test Voltmter/ampermeter (VAM)
+                -If VAM ok
+                    -[OK]
+                    -Send Exit=0
+                -If VAM fail
+                    -Send Exit=1
+                    -Show Fail message
+                    -[HALT]
+            -Test EEPROM/MEMORY (EEM) Read/Write
+                -Addresses
+                    -000 (Version Number)
+                    -001 (Setting 'boot_beep')
+                    -002
+                    
+        -Start Boot
+            -EEM
+                -Addr000
+                    -Read --> Send to Version Var
+                -Addr001
+                    -Read
+                        -If true
+                            -'boot_beep' = true
+                        -If false
+                            -'boot_beep' = false
+

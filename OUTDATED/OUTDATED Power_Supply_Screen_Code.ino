@@ -1,5 +1,6 @@
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//Power Supply Board A20 (Video)
 //Andrew Mohr 2019-2020
 //Version: Beta Build 1.2.1
 //Date Started: 1/18/2020 11:07pm
@@ -34,11 +35,17 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//For help on figuring out Data storage issues, see this website:
+//https://learn.adafruit.com/memories-of-an-arduino/optimizing-sram
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
 #include <Wire.h> //basics
 #include <Adafruit_GFX.h> //GFX
 #include <Adafruit_SSD1306.h> //Display Library
 #include <Adafruit_Sensor.h> //Temp
-#include <DHT.h> //DHT
+//#include <DHT.h> //DHT
 #include <EEPROM.h>
 
 
@@ -50,31 +57,28 @@ Adafruit_SSD1306 display(OLED_RESET); //Do not move position
 
 //variables start
 
-int output;
-int fan;
-int tempWarn;
-int tempWarn_count;
-int tempAlarm;
-int debug_settings_timer;
-int board_state;
-  
-
 //EEPROM
 
     //EEPROM ADDRESSES
+    /*
       int epaddress_01;
       int epaddress_02;
       int epaddress_03;
       int epaddress_04;
-
+  */
 
     //EEPROM VAIRABLES
+    /*
       int ep_addr_01_boardstate;
       int ep_addr_02_backlight;
-      int ep_addr_03_invertdisplay;
-      int ep_addr_04_startups;
+      int ep_addr_03_invdisplay;
+      int ep_addr_04_unused;
+  */
 
-
+byte tempWarn;
+byte tempWarn_count;
+byte tempAlarm;
+boolean board_state;
 int ThermistorPin = A3;
 int Vo;
 float R1 = 10000;
@@ -83,7 +87,7 @@ float c1 = 1.009249522e-03, c2 = 2.378405444e-04, c3 = 2.019202697e-07;
 
 String disv = "B1.2.1";
 String v = "Alpha Build 1.2.1"; //Release Version-------------------------------UPDATE THIS WHEN UPDATING
-String dv = "dev.prebeta-1.2.2r1"; //Development Version----------------------THIS TOO DAMMIT
+String dv = "dev.prebeta-1.2.2r3"; //Development Version------------------------THIS TOO DAMMIT
 
 //variables end
 
@@ -95,15 +99,15 @@ void setup() {
   pinMode(A2, OUTPUT);
 
 //Pinmode end
-
-    Serial.println("SERIAL BAUD SET = 9600");
-        Serial.begin(9600);
+      Serial.begin(9600);  
   Wire.begin();
   display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
-    Serial.println("INITIALIZING DISPLAY >> 0x3c");
+    Serial.println(F("INITIALIZING 0x3c"));
   delay(200);
   display.cp437(true);
   display.clearDisplay();
+  Serial.println("EXIT 00-00");
+
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //STORAGE : RAM : EEPROM \/\/\/
@@ -138,11 +142,12 @@ void setup() {
 
         if(EEPROM.read(1) == 1){
           board_state = 1;
+          Serial.println("EXIT 00-00");
         }
         else{
           board_state = 0;
-          
-        }
+          Serial.println("EXIT 05-04");
+          }
         
 
 
@@ -160,6 +165,7 @@ void setup() {
   analogWrite(A0, 0);
   analogWrite(11, 0);
   digitalWrite(A3, LOW);
+  Serial.println("EXIT 00-00");
   
 
 
@@ -180,17 +186,13 @@ void setup() {
   display.print(              disv);
   display.display();
      
-     Serial.print("<<RUNNING VERSION: ");     
+     Serial.print(F("<<RUNNING: "));     
      Serial.print(v);
-     Serial.println(">>");
-     Serial.print("<<DEVELOPMENT BUILD: ");
+     Serial.println(F(">>"));
+     Serial.print(F("<<DEV BUILD: "));
      Serial.print(dv);
-     Serial.println(">>");
+     Serial.println(F(">>"));
      
-     
-      
-      
-
   delay(1000);
 
 
@@ -211,7 +213,7 @@ void setup() {
     display.setCursor(0,25);
     display.print("        DONE!");
     display.display();
-    
+    Serial.println("EXIT 00-00");
     delay(100);
   
   delay(100);
@@ -247,17 +249,18 @@ void setup() {
       digitalWrite(A0, HIGH);
       delay(100);
       digitalWrite(A0, LOW);
-      delay(300);
-      digitalWrite(A0, HIGH);
       delay(100);
+      digitalWrite(A0, HIGH);
+      delay(800);
       digitalWrite(A0, LOW);
-      delay(300);
+      
 
       display.clearDisplay();
   
 //Automatic board setup
 
   if(board_state == 0){
+      Serial.println("EXIT 05-05");
       digitalWrite(A0, HIGH);
       delay(300);
       digitalWrite(A0, LOW);
@@ -278,21 +281,85 @@ void setup() {
       display.setCursor(0,25);
       display.print("   Loading...");
       display.display();
-    Serial.println("Resetting all EEPROM/memory states to 0");
-/*
-    epaddress_00 = 0;
-    epaddress_01 = 0;
-    epaddress_02 = 0;
-    epaddress_03 = 0;
-*/
+    Serial.println("Resetting EEPROM/memory to 0");
+  
     EEPROM.write(1, 0);
     EEPROM.write(2, 0);
     EEPROM.write(3, 0);
     EEPROM.write(4, 0);
+    EEPROM.write(5, 0);
 
-    Serial.println("All EEPROM/memory has been succesfully reset to 0");
-    delay(1000);
-    Serial.println("Finishing up...");
+    Serial.println("EXIT 00-01");
+
+    Serial.println("All EEPROM/memory reset to 0");
+    delay(100);
+    Serial.println("Testing...");
+
+    EEPROM.write(1, 5);
+    EEPROM.write(2, 5);
+    EEPROM.write(3, 5);
+    EEPROM.write(4, 5);    
+    EEPROM.write(5, 5);
+    
+    Serial.println("ADRR 1 TEST...");
+    if(EEPROM.read(1) == 5){
+      Serial.println("EXIT 00-00");
+    }
+      else{
+        Serial.println("EXIT 20-01");
+        Serial.println("ADDRESS 1 FAILURE");
+      }
+      delay(300);
+    
+
+    Serial.println("ADRR 2 TEST...");
+    if(EEPROM.read(1) == 5){
+      Serial.println("EXIT 00-00");
+    }
+      else{
+        Serial.println("EXIT 20-02");
+        Serial.println("ADDRESS 2 FAILURE");
+      }
+      delay(300);
+
+
+    Serial.println("ADRR 3 TEST...");
+    if(EEPROM.read(1) == 5){
+      Serial.println("EXIT 00-00");
+    }
+      else{
+        Serial.println("EXIT 20-03");
+        Serial.println("ADDRESS 3 FAILURE");
+      }
+      delay(300);
+    
+
+    Serial.println("ADRR 4 TEST...");
+    if(EEPROM.read(1) == 5){
+      Serial.println("EXIT 00-00");
+    }
+      else{
+        Serial.println("EXIT 20-04");
+        Serial.println("ADDRESS 4 FAILURE");
+      }
+      delay(300);
+    
+
+    Serial.println("ADRR 5 TEST...");
+    if(EEPROM.read(1) == 5){
+      Serial.println("EXIT 00-00");
+    }
+      else{
+        Serial.println("EXIT 20-05");
+        Serial.println("ADDRESS 5 FAILURE");
+      }
+      delay(300);
+    
+
+
+
+
+    Serial.println("Finishing up");
       
       display.clearDisplay();
 
@@ -305,7 +372,7 @@ void setup() {
       display.setTextColor(WHITE);
       display.setTextSize(0);
       display.setCursor(0,25);
-      display.print("  Finishing up...");
+      display.print("Finishing up...");
       display.display();
         //Setting up for use:
           //ep_addr_00_boardstate = 1;
@@ -315,10 +382,9 @@ void setup() {
           EEPROM.write(2, 0);
     delay(2500);
 
-    Serial.println("All done!");
-    Serial.println("Your unit is now ready to be used.");
-    Serial.println("Please Reset to apply");
-
+    Serial.println("done");
+    Serial.println("Reset to apply");
+    Serial.println("EXIT 00-00");
     display.clearDisplay();
 
       display.setTextColor(WHITE);
@@ -338,13 +404,12 @@ void setup() {
       display.print("      ALL DONE");
       display.display();
       analogWrite(A0, 255);
-      delay(9999999);
+      delay(999999);
 
   }
   
 
 
-  ep_addr_04_startups = ep_addr_04_startups + 1;
   tempWarn_count = 0;
   tempWarn = LOW;
   display.clearDisplay();
@@ -365,7 +430,7 @@ void setup() {
 
 
 
-  void loop() {
+void loop() {
     
 
      //incomingbyte = Serial.readString();
@@ -416,28 +481,10 @@ void setup() {
 //Input Data scripts below|
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     
-/*
-  display.setTextColor(WHITE);
-  display.setTextSize(0);
-  display.setCursor(45,25);
-  display.print("CYCLE ");
-  display.setTextColor(WHITE);
-  display.setTextSize(0);
-  display.setCursor(83,25);
-  display.print(cycle);
-*/ 
 
 
-if (debug_settings_timer == 5) {
-  display.clearDisplay();
-  display.setTextColor(WHITE);
-    display.setTextSize(0);
-    display.setCursor(0,0);
-    display.print("SETTINGS");
-    display.display();
 
-}
-else {
+
   //debug_settings_timer = debug_settings_timer + 1;
   digitalWrite(A0, LOW);
     display.drawCircle(40, 28, 3, WHITE); 
@@ -458,7 +505,7 @@ else {
     analogWrite(5, 0);
     display.display();
     display.clearDisplay();
-      //Serial.println("OUTPUT--OFF");
+    Serial.println("EXIT 06-01");
     
   }
     else {
@@ -466,7 +513,7 @@ else {
     digitalWrite(5, HIGH);
     display.display();
     display.clearDisplay();
-      //Serial.println("OUTPUT--ACTIVE");
+    Serial.println("EXIT 06-00");
   }
 
 
@@ -515,7 +562,8 @@ else {
         if (digitalRead(6) == HIGH) {
       display.print("READY");
         //Serial.println("READY");
-    
+      Serial.println(F("EXIT 06-02"));
+      
   }
       else {
           //Serial.println("--WARNING!--NOT READY--");
@@ -529,15 +577,7 @@ else {
         digitalWrite(A0, 0);
         digitalWrite(A2, LOW);
         delay(50);
-        digitalWrite(A0, 255);
-        delay(50);
-        digitalWrite(A0, 0);
-        delay(50);
-        digitalWrite(A0, 255);
-        delay(50);
-        digitalWrite(A0, 0);
-        delay(50);
-        
+        Serial.println(F("EXIT 06-03"));
       }
       
   //~~~~
@@ -551,7 +591,7 @@ else {
         if (digitalRead(7) == HIGH) {
       display.print("OK");
         //Serial.println("OK");
-    
+      Serial.println("EXIT 06-04");
   }
       else {
 
@@ -574,11 +614,11 @@ else {
         delay(100);
         analogWrite(11, 0);
         delay(200);
-
+      Serial.println(F("EXIT 06-05"));
       }
   //~~~~
 
-
+/*
                                   //PANEL BACKLIGHT STATUS
     if (analogRead(A1) >= 480) {
 
@@ -593,7 +633,7 @@ else {
       }
 
 
-
+*/
   //~~~~
 
 
@@ -610,10 +650,10 @@ else {
   T = (T * 9.0)/ 5.0 + 32.0; 
   
 
-  Serial.print("Temperature: "); 
-  Serial.print(T);
-  Serial.println(" F");
-
+  //Serial.print("Temp: "); 
+  //Serial.print(T);
+  //Serial.println(" F");
+/*
                             //Fan Regulator
     if (T >= 75) {
         digitalWrite(8, HIGH);
@@ -625,7 +665,7 @@ else {
      display.drawCircle(40, 28, 3, WHITE);
      fan = LOW;
       }
-
+*/
 
                             //tempWarn
         display.setTextColor(WHITE);
@@ -636,12 +676,13 @@ else {
      tempWarn_count = tempWarn_count + 1;
      tempWarn = HIGH;
      display.print("WARNING TEMP HIGH");
-     Serial.println("WARNING TEMPERATURE REACHED >100*F");
-     
+     Serial.println(F("[ALARM]"));
+     Serial.println(F("EXIT 05-02"));
       }
     else {
      tempWarn_count = 0;
      tempWarn = LOW;
+     Serial.println("EXIT 00-00");
       }
 
 
@@ -652,8 +693,8 @@ else {
      digitalWrite(A2, HIGH);
      delay(100);
      digitalWrite(A2, LOW);
-     Serial.println("TEMPERATURE HAS REACHED >120*F");
-     Serial.println("LM317 MAX TEMP IS 125*F");
+     Serial.println(F("[ALARM]"));
+     Serial.println(F("EXIT 05-03"));
       }
     else {
         digitalWrite(8, LOW);
@@ -707,13 +748,27 @@ else {
   display.print("F");
   
 
+//~~~~~
+
+                   //Data logging and displaying~~~~~~~~~~~~~~~~
+
+  
+	char temperature_text[30];
+
+	dtostrf(T, 10, 10, temperature_text);
+
+	char text[32];
+	snprintf(text, 32, "%s", temperature_text);
+	Serial.println(text);
 
 
-  //~~~~~
+
+
+
+//~~~~~
 
         //cycle = cycle + 1; //~~~~~KEEP THESE LAST OF VOID LOOP
         //fan_count = fan_count + 1; //THIS TOO
         //buttonCurrent = buttonPrevious;
 
-  }
 }
