@@ -1,53 +1,109 @@
+--------------------------------
+Last Updated: 06/13/2020 07:05pm
+--------------------------------
 
 
-Notes:
-    Watts = Voltage x Amperage 
+--------------------------------
+DATA INFO:
+--------------------------------
 
-Sequence path:
 
--Button press detected
-    -Start seq
-        -Testing
-            -Test Fan
-                -Rev to 100%
-            -Test Relay0 (R0)
-                -If R0 ok
-                    -[OK]
-                    -Send Exit=0
-                -If R0 fail
-                    -Send Exit=1
-                    -Show Fail message
-                    -[HALT]
-            -Test Relay1 (R1)
-                -If R1 ok
-                    -[OK]
-                    -Send Exit=0
-                -If R1 fail
-                    -Send Exit=1
-                    -Show Fail message
-                    -[HALT]
-            -Test Voltmter/ampermeter (VAM)
-                -If VAM ok
-                    -[OK]
-                    -Send Exit=0
-                -If VAM fail
-                    -Send Exit=1
-                    -Show Fail message
-                    -[HALT]
-            -Test EEPROM/MEMORY (EEM) Read/Write
-                -Addresses
-                    -000 (Version Number)
-                    -001 (Setting 'boot_beep')
-                    -002
-                    
-        -Start Boot
-            -EEM
-                -Addr000
-                    -Read --> Send to Version Var
-                -Addr001
-                    -Read
-                        -If true
-                            -'boot_beep' = true
-                        -If false
-                            -'boot_beep' = false
+Exit Codes: (APPLIES FOR BOTH BOARDS [A100], [A10], [A20])
 
+   -EXIT 00 - [OK]
+      -EXIT 00-000 - EXIT STATUS       [OK]
+      -EXIT 00-021 - EEPROM ADDRESS 01 [OK]
+      -EXIT 00-022 - EEPROM ADDRESS 02 [OK]
+      -EXIT 00-023 - EEPROM ADDRESS 03 [OK]
+      -EXIT 00-024 - EEPROM ADDRESS 04 [OK]
+      -EXIT 00-025 - EEPROM ADDRESS 05 [OK]
+      -EXIT 00-026 - EEPROM ADDRESS 06 [OK]
+      -EXIT 00-027 - EEPROM ADDRESS 07 [OK]
+      -EXIT 00-028 - EEPROM ADDRESS 08 [OK]
+      -EXIT 00-029 - EEPROM ADDRESS 09 [OK]
+      -EXIT 00-030 - EEPROM ADDRESS 10 [OK]
+      -EXIT 00-031 - EEPROM ADDRESS 11 [OK]
+      -EXIT 00-032 - EEPROM ADDRESS 12 [OK]
+      -EXIT 00-033 - EEPROM ADDRESS 13 [OK]
+      -EXIT 00-034 - EEPROM ADDRESS 14 [OK]
+      -EXIT 00-035 - EEPROM ADDRESS 15 [OK]
+      -EXIT 00-036 - EEPROM ADDRESS 16 [OK]
+      -EXIT 00-037 - EEPROM ADDRESS 17 [OK]
+      -EXIT 00-038 - EEPROM ADDRESS 18 [OK]
+      -EXIT 00-039 - EEPROM ADDRESS 19 [OK]
+      -EXIT 00-040 - EEPROM ADDRESS 20 [OK]
+      -EXIT 00-041 - FULL EEPROM       [OK]
+      -EXIT 00-050 - RELAY 0           [OK]
+      -EXIT 00-051 - RELAY 1           [OK]
+
+   -EXIT 05 - [WARN]
+      -EXIT 05-000 - GENERAL WARN (MOSTLY UNUSED)
+      -EXIT 05-001 - 
+      -EXIT 05-002 - TEMPERATURE OF LM317 REACHED >100F / >37.7C
+      -EXIT 05-002 - TEMPERATURE OF LM317 REACHED >125F / >51.6C (OVERHEAT) (TEMPERATURE LM317 STARTS TO MELT IS ~125F / ~51.6C)
+      -EXIT 05-004 - AUTOSETUP NEEDS TO BE DONE - THIS SHOULD BE DONE AUTOMATICALLY
+      -EXIT 05-005 - AUTOSETUP WILL BEGIN
+
+   -EXIT 06 - [STATUS]
+      -EXIT 06-000 - OUTPUT ACTIVE
+      -EXIT 06-001 - OUTPUT OFF
+      -EXIT 06-002 - READY
+      -EXIT 06-003 - NOT READY
+      -EXIT 06-004 - NO SHORT CIRCUITS DETECTED
+      -EXIT 06-005 - SHORT CIRCUIT DETECTED
+      -EXIT 06-006 - FAN COOLING
+      -EXIT 06-007 - FAN IDLE 
+
+   -EXIT 10 - [ERROR]
+      -EXIT 10-000 - GENERAL ERROR (MOSTLY UNUSED)
+      -EXIT 10-021 - EEPROM ADDRESS 01 [ERR]
+      -EXIT 10-022 - EEPROM ADDRESS 02 [ERR]
+      -EXIT 10-023 - EEPROM ADDRESS 03 [ERR]
+      -EXIT 10-024 - EEPROM ADDRESS 04 [ERR]
+      -EXIT 10-025 - EEPROM ADDRESS 05 [ERR]
+      -EXIT 10-026 - EEPROM ADDRESS 06 [ERR]
+      -EXIT 10-027 - EEPROM ADDRESS 07 [ERR]
+      -EXIT 10-028 - EEPROM ADDRESS 08 [ERR]
+      -EXIT 10-029 - EEPROM ADDRESS 09 [ERR]
+      -EXIT 10-030 - EEPROM ADDRESS 10 [ERR]
+      -EXIT 10-031 - EEPROM ADDRESS 11 [ERR]
+      -EXIT 10-032 - EEPROM ADDRESS 12 [ERR]
+      -EXIT 10-033 - EEPROM ADDRESS 13 [ERR]
+      -EXIT 10-034 - EEPROM ADDRESS 14 [ERR]
+      -EXIT 10-035 - EEPROM ADDRESS 15 [ERR]
+      -EXIT 10-036 - EEPROM ADDRESS 16 [ERR]
+      -EXIT 10-037 - EEPROM ADDRESS 17 [ERR]
+      -EXIT 10-038 - EEPROM ADDRESS 18 [ERR]
+      -EXIT 10-039 - EEPROM ADDRESS 19 [ERR]
+      -EXIT 10-040 - EEPROM ADDRESS 20 [ERR]
+      -EXIT 10-041 - FULL EEPROM       [ERR]
+
+   -EXIT 20 - [FAIL]
+      -EXIT 20-000 - GENERAL FAILURE (MOSTLY UNUSED)
+      -EXIT 20-021 - EEPROM ADDRESS 01 [FAIL]
+      -EXIT 20-022 - EEPROM ADDRESS 02 [FAIL]
+      -EXIT 20-023 - EEPROM ADDRESS 03 [FAIL]
+      -EXIT 20-024 - EEPROM ADDRESS 04 [FAIL]
+      -EXIT 20-025 - EEPROM ADDRESS 05 [FAIL]
+      -EXIT 20-026 - EEPROM ADDRESS 06 [FAIL]
+      -EXIT 20-027 - EEPROM ADDRESS 07 [FAIL]
+      -EXIT 20-028 - EEPROM ADDRESS 08 [FAIL]
+      -EXIT 20-029 - EEPROM ADDRESS 09 [FAIL]
+      -EXIT 20-030 - EEPROM ADDRESS 10 [FAIL]
+      -EXIT 20-031 - EEPROM ADDRESS 11 [FAIL]
+      -EXIT 20-032 - EEPROM ADDRESS 12 [FAIL]
+      -EXIT 20-033 - EEPROM ADDRESS 13 [FAIL]
+      -EXIT 20-034 - EEPROM ADDRESS 14 [FAIL]
+      -EXIT 20-035 - EEPROM ADDRESS 15 [FAIL]
+      -EXIT 20-036 - EEPROM ADDRESS 16 [FAIL]
+      -EXIT 20-037 - EEPROM ADDRESS 17 [FAIL]
+      -EXIT 20-038 - EEPROM ADDRESS 18 [FAIL]
+      -EXIT 20-039 - EEPROM ADDRESS 19 [FAIL]
+      -EXIT 20-040 - EEPROM ADDRESS 20 [FAIL]
+      -EXIT 20-041 - FULL EEPROM       [FAIL]
+      -EXIT 20-050 - RELAY 0           [FAIL]
+      -EXIT 20-051 - RELAY 1           [FAIL]
+
+   -EXIT 50 - [WATCHDOG]
+      -EXIT 50-060 - RAM/ROM/EEPROM NOT RESPONDING
+      -EXIT 50-061 - RTC NOT RESPONDING

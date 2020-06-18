@@ -8,7 +8,21 @@ DATA INFO:
 --------------------------------
 
 
-Exit Codes: (APPLIES FOR BOTH BOARDS [A100], [A10], [A20])
+How to Operate:
+
+   1.
+   2.
+   3.
+
+
+Settings Navigation:
+
+   1.
+   2.
+   3.
+
+
+Exit Codes: (APPLIES FOR BOARDS [A100], [A10], [A20])
 
    -EXIT 00 - [OK]
       -EXIT 00-000 - EXIT STATUS       [OK]
