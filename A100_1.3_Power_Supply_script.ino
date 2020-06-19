@@ -2,7 +2,7 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //Power Supply MotherBoard (DESIGNED FOR A100 MODEL)
 //Andrew Mohr 2019-2020
-//Version: Beta Build 1.2.1
+//Version: Alpha Build 0.0.4
 //Date Project Started: 01/18/2020 11:07pm
 //This specific script Started: 04/24/2020 10:10pm
 //Last Date Offically Updated: 04/24/2020 10:10pm
@@ -23,19 +23,19 @@
 
 
 
-
-
-
 #include <Wire.h> //basics
 #include <Adafruit_GFX.h> //GFX
 #include <Adafruit_SSD1306.h> //Display Library
 #include <Adafruit_Sensor.h> //Temp
-//#include <DHT.h> //DHT
+#include <DHT.h> //DHT
 #include <EEPROM.h>
 #include <Encoder.h> 
+#include <Adafruit_INA219.h>
+#include <Adafruit_NeoPixel.h>
+#include <SparkFun_External_EEPROM.h>
 
 
-#define OLED_RESET 13  //keep this before one below!!!
+#define OLED_RESET 13  //keep this above one below!!!
 Adafruit_SSD1306 display(OLED_RESET); //Do not move position
 #define SCREEN_WIDTH 128
 #define SCREEN_HIGHT 64
